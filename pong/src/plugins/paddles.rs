@@ -20,16 +20,17 @@ pub enum Paddle {
 }
 
 #[derive(Resource, Default)]
-struct PaddlesConfig
+pub struct PaddlesConfig
 {
-    l_paddle: PaddleConfig,
-    r_paddle: PaddleConfig
+    pub l_paddle: PaddleConfig,
+    pub r_paddle: PaddleConfig
 }
 
-struct PaddleConfig {
-    colour: Vec4,
-    size: Vec2,
-    position: Vec2
+pub struct PaddleConfig {
+    pub colour: Vec4,
+    pub size: Vec2,
+    pub position: Vec2,
+    pub speed: i32
 }
 
 impl Default for PaddleConfig {
@@ -37,7 +38,8 @@ impl Default for PaddleConfig {
         Self {
             colour: Vec4::new(1.0, 1.0, 1.0, 1.0),
             size: Vec2::new(15.0, 100.0),
-            position: Vec2::new(0.0, 0.0)
+            position: Vec2::new(0.0, 0.0),
+            speed: 200
         }
     }
 }
