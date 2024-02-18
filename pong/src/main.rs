@@ -1,4 +1,7 @@
 mod plugins;
+mod components;
+mod systems;
+
 use plugins::paddles::*;
 
 use bevy::{

@@ -1,13 +1,16 @@
-
 use bevy::prelude::*;
+use crate::components::velocity::*;
+use crate::systems::paddle_movement::move_paddle;
+use crate::systems::movement::apply_velocity;
 
 pub struct PaddlesPlugin;
 
 impl Plugin for PaddlesPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PreStartup, setup_paddles_config)
-        .add_systems(Startup, spawn_paddles);
-    }
+        .add_systems(Startup, spawn_paddles)
+        .add_systems(Update, (move_paddle, apply_velocity).chain());
+}
 }
 
 #[derive(Component)]
@@ -45,7 +48,7 @@ fn spawn_paddles(mut commands: Commands, game_config: Res<PaddlesConfig>) {
 }
 
 fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_component: Paddle) {
-    commands.spawn((paddle_component, SpriteBundle {
+    commands.spawn((paddle_component, Velocity {current: default()}, SpriteBundle {
         transform: Transform {
             translation: paddle_config.position.extend(0.0),
             scale: paddle_config.size.extend(1.0),
