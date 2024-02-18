@@ -9,10 +9,12 @@ impl Plugin for PaddlesPlugin {
         .add_systems(Startup, spawn_paddles);
     }
 }
+
 #[derive(Component)]
-pub struct LeftPaddle;
-#[derive(Component)]
-pub struct RightPaddle;
+pub enum Paddle {
+    RightPaddle,
+    LeftPaddle
+}
 
 #[derive(Resource, Default)]
 struct PaddlesConfig
@@ -38,11 +40,11 @@ impl Default for PaddleConfig {
 }
 
 fn spawn_paddles(mut commands: Commands, game_config: Res<PaddlesConfig>) {
-    spawn_paddle(&mut commands, &game_config.l_paddle, LeftPaddle);
-    spawn_paddle(&mut commands, &game_config.r_paddle, RightPaddle);
+    spawn_paddle(&mut commands, &game_config.l_paddle, Paddle::LeftPaddle);
+    spawn_paddle(&mut commands, &game_config.r_paddle, Paddle::RightPaddle);
 }
 
-fn spawn_paddle<T: Component>(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_component: T) {
+fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_component: Paddle) {
     commands.spawn((paddle_component, SpriteBundle {
         transform: Transform {
             translation: paddle_config.position.extend(0.0),
