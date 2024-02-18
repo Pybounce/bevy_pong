@@ -1,0 +1,23 @@
+
+______________________Paddles______________________
+
+Make a paddle config for initial paddle values used to create it (size/colour etc)
+Move values that are used at runtime (speed) to some other config, perhaps even just initialise with x velocity, and then sign flip the velocity.
+
+Make the paddle_movement system nicer to read.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
