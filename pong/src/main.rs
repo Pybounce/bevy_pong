@@ -1,6 +1,8 @@
 mod plugins;
 mod components;
 mod systems;
+use bevy::winit::UpdateMode;
+use bevy::winit::WinitSettings;
 use bevy_rapier2d::prelude::*;
 use plugins::paddles::*;
 use plugins::ball::*;
@@ -12,7 +14,12 @@ use bevy::{
 
 
 fn main() {
+    let winit_settings = WinitSettings {
+        focused_mode: UpdateMode::Continuous,
+        unfocused_mode: UpdateMode::Continuous,
+    };
     App::new()
+    .insert_resource(winit_settings)
     .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
     .add_plugins(RapierDebugRenderPlugin::default())
     .add_plugins((DefaultPlugins, PaddlesPlugin, BallPlugin))
