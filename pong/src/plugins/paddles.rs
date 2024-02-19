@@ -1,7 +1,6 @@
 use bevy::prelude::*;
-use crate::components::velocity::*;
+use bevy_rapier2d::prelude::*;
 use crate::systems::paddle_movement::move_paddle;
-use crate::systems::movement::apply_velocity;
 
 pub struct PaddlesPlugin;
 
@@ -9,7 +8,7 @@ impl Plugin for PaddlesPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PreStartup, setup_paddles_config)
         .add_systems(Startup, spawn_paddles)
-        .add_systems(Update, (move_paddle, apply_velocity).chain());
+        .add_systems(Update, (move_paddle).chain());
 }
 }
 
@@ -50,7 +49,7 @@ fn spawn_paddles(mut commands: Commands, game_config: Res<PaddlesConfig>) {
 }
 
 fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_component: Paddle) {
-    commands.spawn((paddle_component, Velocity {current: default()}, SpriteBundle {
+    commands.spawn((paddle_component, SpriteBundle {
         transform: Transform {
             translation: paddle_config.position.extend(0.0),
             scale: paddle_config.size.extend(1.0),
@@ -61,7 +60,11 @@ fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_co
             ..default()
         },
         ..default()
-    }));
+    })).insert(RigidBody::KinematicVelocityBased)
+    .insert(Collider::cuboid(0.5, 0.5))
+    .insert(Restitution::coefficient(1.0))
+    .insert(Friction::coefficient(0.0))
+    .insert(Velocity::default());
 }
 
 fn setup_paddles_config(mut commands: Commands) {

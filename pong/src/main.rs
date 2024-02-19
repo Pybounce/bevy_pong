@@ -1,8 +1,9 @@
 mod plugins;
 mod components;
 mod systems;
-
+use bevy_rapier2d::prelude::*;
 use plugins::paddles::*;
+use plugins::ball::*;
 
 use bevy::{
     prelude::*, 
@@ -12,7 +13,9 @@ use bevy::{
 
 fn main() {
     App::new()
-    .add_plugins((DefaultPlugins, PaddlesPlugin))
+    .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
+    .add_plugins(RapierDebugRenderPlugin::default())
+    .add_plugins((DefaultPlugins, PaddlesPlugin, BallPlugin))
     .add_systems(Startup, spawn_camera)
     .add_systems(Update, close_on_esc)
     .run();
@@ -22,7 +25,6 @@ fn main() {
 
 fn spawn_camera(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
-
 }
 
 
