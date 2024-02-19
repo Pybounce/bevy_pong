@@ -27,7 +27,7 @@ pub struct PaddlesConfig
 }
 
 pub struct PaddleConfig {
-    pub colour: Vec4,
+    pub colour: Color,
     pub size: Vec2,
     pub position: Vec2,
     pub speed: i32
@@ -36,7 +36,7 @@ pub struct PaddleConfig {
 impl Default for PaddleConfig {
     fn default() -> Self {
         Self {
-            colour: Vec4::new(1.0, 1.0, 1.0, 1.0),
+            colour: Color::rgb(1.0, 1.0, 1.0),
             size: Vec2::new(15.0, 100.0),
             position: Vec2::new(0.0, 0.0),
             speed: 200
@@ -67,9 +67,9 @@ fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_co
 fn setup_paddles_config(mut commands: Commands) {
     let mut paddles_config = PaddlesConfig::default();
     paddles_config.l_paddle.position.x = -500.0;
-    paddles_config.l_paddle.colour = Vec4::new(0.7, 0.0, 0.0, 1.0);
+    paddles_config.l_paddle.colour = Color::rgb(0.7, 0.0, 0.0);
     paddles_config.r_paddle.position.x = 500.0;
-    paddles_config.r_paddle.colour = Vec4::new(0.0, 0.0, 0.7, 1.0);
+    paddles_config.r_paddle.colour = Color::rgb(0.0, 0.0, 0.7);
 
     commands.insert_resource(paddles_config);
 }
