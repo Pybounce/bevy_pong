@@ -36,9 +36,9 @@ impl Default for PaddleConfig {
     fn default() -> Self {
         Self {
             colour: Color::rgb(1.0, 1.0, 1.0),
-            size: Vec2::new(15.0, 100.0),
+            size: Vec2::new(20.0, 100.0),
             position: Vec2::new(0.0, 0.0),
-            speed: 200
+            speed: 300
         }
     }
 }
@@ -60,10 +60,12 @@ fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_co
             ..default()
         },
         ..default()
-    })).insert(RigidBody::KinematicVelocityBased)
+    })).insert(RigidBody::Dynamic)
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
     .insert(Friction::coefficient(0.0))
+    .insert(GravityScale(0.0))
+    .insert(LockedAxes::ROTATION_LOCKED)
     .insert(Velocity::default());
 }
 
