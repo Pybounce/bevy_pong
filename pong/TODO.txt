@@ -8,6 +8,9 @@ with x velocity, and then sign flip the velocity.
 - Make the paddle_movement system nicer to read.
 
 
+______________________Collision______________________
 
+- Collision with paddles should give the ball extra velocity in the opposing direction
 
+- Collision with goals should reset the ball
 
