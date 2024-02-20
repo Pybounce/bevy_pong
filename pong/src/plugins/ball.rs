@@ -25,7 +25,7 @@ fn spawn_ball(mut commands: Commands) {
             ..default()
         },
         sprite: Sprite {
-            color: Color::rgb(0.0, 1.0, 0.0),
+            color: Color::rgb(0.9, 0.9, 0.9),
             ..default()
         },
         ..default()
@@ -68,16 +68,17 @@ fn check_paddle_collision(
         };
 
         let (paddle, paddle_transform) = paddle_query.get(paddle_entity).unwrap();
+        let paddle_size_y = match paddle {
+            Paddle::LeftPaddle => paddles_config.l_paddle.size.y,
+            Paddle::RightPaddle => paddles_config.r_paddle.size.y
+        };
         let (mut ball_velocity, ball_transform) = ball_query.get_mut(ball_entity).unwrap();
         let y_diff = ball_transform.translation.y - paddle_transform.translation.y;
-        let y_diff_normalised = y_diff / paddles_config.l_paddle.size.y * 2.0;
-        let y_diff_idk = (y_diff_normalised * 0.5).min(0.5).max(-0.5);
-        let mut x_idk = 1.0 - y_diff_idk.abs();
-        warn!("{}", y_diff_idk);
-        if ball_velocity.linvel.x < 0.0 {
-            x_idk = -x_idk.abs();
-        }
-        ball_velocity.linvel = (Vec2::new(x_idk, y_diff_idk)) * BALL_SPEED;
+        let y_diff_normalised = y_diff / paddle_size_y * 2.0;
+        let y = (y_diff_normalised * 0.5).min(0.5).max(-0.5);
+        let x = (1.0 - y.abs()) * ball_velocity.linvel.x.signum();
+
+        ball_velocity.linvel = (Vec2::new(x, y)) * BALL_SPEED;
 
     }
 }

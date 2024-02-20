@@ -98,7 +98,7 @@ fn setup_level(mut commands: Commands) {
             ..default()
         },
         sprite: Sprite {
-            color: Color::rgba(0.5, 0.5, 0.5, 1.0),
+            color: Color::rgba(0.1, 0.1, 0.1, 1.0),
             ..default()
         },
         ..default()
@@ -134,12 +134,10 @@ fn check_goal_collisions(
                 match goal {
                     Goal::Left => {
                         scoreboard.right_score += 1;
-                        info!("Left goal hit");
 
                     },
                     Goal::Right => {
                         scoreboard.left_score += 1;
-                        info!("Right goal hit");
                     },
                 }
             }
@@ -166,26 +164,27 @@ fn setup_scoreboard(mut commands: Commands) {
         TextBundle::from_sections([
             TextSection::from_style(TextStyle {
                 font_size: 128.0,
-                color: Color::rgb(0.8, 0.8, 0.8),
+                color: Color::rgb(0.5, 0.5, 0.5),
                 ..default()
             }),
             TextSection::new(
-                "|",
+                "         ",
                 TextStyle {
                     font_size: 128.0,
-                    color: Color::rgb(0.8, 0.8, 0.8),
+                    color: Color::rgb(0.5, 0.5, 0.5),
                     ..default()
                 },
             ),
             TextSection::from_style(TextStyle {
                 font_size: 128.0,
-                color: Color::rgb(0.8, 0.8, 0.8),
+                color: Color::rgb(0.5, 0.5, 0.5),
                 ..default()
             }),
         ])
         .with_style(Style {
             width: Val::Auto,
             position_type: PositionType::Absolute,
+            margin: UiRect {bottom: Val::Px(400.0), ..default()},
             display: Display::Flex,
             align_self: AlignSelf::Center,
             justify_self: JustifySelf::Center,
