@@ -1,14 +1,15 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+use super::paddles::*;
 
-const BALL_SPEED: f32 = 1000.0;
+const BALL_SPEED: f32 = 500.0;
 const BALL_SIZE: Vec2 = Vec2::new(20.0, 20.0);
 
 pub struct BallPlugin;
 impl Plugin for BallPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, spawn_ball)
-        .add_systems(Update, clamp_velocity);
+        .add_systems(Update, (clamp_velocity, check_paddle_collision));
     }
 }
 
@@ -42,6 +43,41 @@ fn spawn_ball(mut commands: Commands) {
 
 fn clamp_velocity(mut query: Query<&mut Velocity, With<Ball>>) {
     for mut velocity in &mut query {
-        velocity.linvel = velocity.linvel.normalize() * BALL_SPEED;
+        velocity.linvel = (velocity.linvel).normalize() * BALL_SPEED;
+    }
+}
+
+fn check_paddle_collision(
+    mut collision_events: EventReader<CollisionEvent>,
+    paddles_config: Res<PaddlesConfig>,
+    mut ball_query: Query<(&mut Velocity, &Transform), With<Ball>>,
+    paddle_query: Query<(&Paddle, &Transform)>,
+) {
+    for collision_event in collision_events.read() {
+        let (entity1, entity2) = match collision_event {
+            CollisionEvent::Stopped(e1, e2, _) => { (*e1, *e2) },
+            CollisionEvent::Started(_, _, _) => { continue; },
+        };
+
+         let (ball_entity, paddle_entity) = if ball_query.get(entity1).is_ok() {
+            (entity1, entity2)
+        } else if ball_query.get(entity2).is_ok() && paddle_query.get(entity1).is_ok() {
+            (entity2, entity1)
+        } else {
+            continue;
+        };
+
+        let (paddle, paddle_transform) = paddle_query.get(paddle_entity).unwrap();
+        let (mut ball_velocity, ball_transform) = ball_query.get_mut(ball_entity).unwrap();
+        let y_diff = ball_transform.translation.y - paddle_transform.translation.y;
+        let y_diff_normalised = y_diff / paddles_config.l_paddle.size.y * 2.0;
+        let y_diff_idk = (y_diff_normalised * 0.5).min(0.5).max(-0.5);
+        let mut x_idk = 1.0 - y_diff_idk.abs();
+        warn!("{}", y_diff_idk);
+        if ball_velocity.linvel.x < 0.0 {
+            x_idk = -x_idk.abs();
+        }
+        ball_velocity.linvel = (Vec2::new(x_idk, y_diff_idk)) * BALL_SPEED;
+
     }
 }
