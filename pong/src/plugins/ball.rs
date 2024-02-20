@@ -36,6 +36,7 @@ fn spawn_ball(mut commands: Commands) {
     .insert(Velocity::linear(Vec2::new(3.0, 1.0)))
     .insert(GravityScale(0.0))
     .insert(LockedAxes::ROTATION_LOCKED)
+    .insert(ActiveEvents::COLLISION_EVENTS)
     .insert(Ball);
 }
 

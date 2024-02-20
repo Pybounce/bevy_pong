@@ -1,5 +1,4 @@
 mod plugins;
-mod components;
 mod systems;
 use bevy::winit::UpdateMode;
 use bevy::winit::WinitSettings;

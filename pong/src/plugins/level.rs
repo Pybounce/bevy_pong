@@ -1,17 +1,14 @@
 
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+use super::ball::{self, Ball};
 
 const LEVEL_AREA: Vec2 = Vec2::new(1400.0, 700.0);
 
-pub enum Team {
+#[derive(Component)]
+pub enum Goal {
     Left,
     Right
-}
-
-#[derive(Component)]
-pub struct Goal {
-    pub team: Team
 }
 
 
@@ -20,6 +17,7 @@ pub struct LevelPlugin;
 impl Plugin for LevelPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_level);
+        app.add_systems(Update, check_goal_collisions);
         }
 }
 
@@ -70,7 +68,7 @@ fn setup_level(mut commands: Commands) {
         },
         ..default()
     })
-    .insert(Goal {team: Team::Left})
+    .insert(Goal::Left)
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
     .insert(Friction::coefficient(0.0));
@@ -87,7 +85,7 @@ fn setup_level(mut commands: Commands) {
         },
         ..default()
     })
-    .insert(Goal {team: Team::Right})
+    .insert(Goal::Right)
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
     .insert(Friction::coefficient(0.0));
@@ -111,7 +109,39 @@ fn setup_level(mut commands: Commands) {
 
 
 
+pub fn check_goal_collisions(
+    mut collision_events: EventReader<CollisionEvent>,
+    ball_query: Query<(&mut Velocity), With<Ball>>,
+    goal_query: Query<&Goal>,
+) {
+        for collision_event in collision_events.read() {
 
+            let (entity1, entity2) = match collision_event {
+                CollisionEvent::Started(e1, e2, _) => { (*e1, *e2) },
+                CollisionEvent::Stopped(_, _, _) => { continue; },
+            };
+    
+             let (ball_entity, goal_entity) = if ball_query.get(entity1).is_ok() {
+                (entity1, entity2)
+            } else if ball_query.get(entity2).is_ok() {
+                (entity2, entity1)
+            } else {
+                continue;
+            };
+            let ball_velocity = ball_query.get(ball_entity).unwrap();
+            if let Ok(goal) = goal_query.get(goal_entity) {
+                match goal {
+                    Goal::Left => {
+                        info!("Left goal hit");
+
+                    },
+                    Goal::Right => {
+                        info!("Right goal hit");
+                    },
+                }
+            }
+        }
+    }
 
 
 
