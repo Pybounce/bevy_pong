@@ -30,6 +30,7 @@ fn main() {
 
     App::new()
     .insert_resource(winit_settings)
+    .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
     .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
     //.add_plugins(RapierDebugRenderPlugin::default())
     .add_plugins((DefaultPlugins.set(window_settings), PaddlesPlugin, BallPlugin, LevelPlugin))

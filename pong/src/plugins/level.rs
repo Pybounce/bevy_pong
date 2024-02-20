@@ -1,7 +1,7 @@
 
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use super::ball::{self, Ball};
+use super::ball::Ball;
 
 const LEVEL_AREA: Vec2 = Vec2::new(1400.0, 700.0);
 
@@ -98,7 +98,7 @@ fn setup_level(mut commands: Commands) {
             ..default()
         },
         sprite: Sprite {
-            color: Color::rgba(0.1, 0.1, 0.1, 1.0),
+            color: Color::rgba(0.15, 0.15, 0.15, 1.0),
             ..default()
         },
         ..default()
@@ -111,7 +111,7 @@ fn setup_level(mut commands: Commands) {
 
 fn check_goal_collisions(
     mut collision_events: EventReader<CollisionEvent>,
-    ball_query: Query<&mut Velocity, With<Ball>>,
+    ball_query: Query<(), With<Ball>>,
     goal_query: Query<&Goal>,
     mut scoreboard: ResMut<Scoreboard>
 ) {
@@ -122,14 +122,14 @@ fn check_goal_collisions(
                 CollisionEvent::Stopped(_, _, _) => { continue; },
             };
     
-             let (ball_entity, goal_entity) = if ball_query.get(entity1).is_ok() {
+             let (_, goal_entity) = if ball_query.get(entity1).is_ok() {
                 (entity1, entity2)
             } else if ball_query.get(entity2).is_ok() {
                 (entity2, entity1)
             } else {
                 continue;
             };
-            let ball_velocity = ball_query.get(ball_entity).unwrap();
+
             if let Ok(goal) = goal_query.get(goal_entity) {
                 match goal {
                     Goal::Left => {
