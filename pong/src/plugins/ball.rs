@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-const BALL_SPEED: f32 = 500.0;
+const BALL_SPEED: f32 = 1000.0;
 const BALL_SIZE: Vec2 = Vec2::new(20.0, 20.0);
 
 pub struct BallPlugin;
@@ -33,7 +33,7 @@ fn spawn_ball(mut commands: Commands) {
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
     .insert(Friction::coefficient(0.0))
-    .insert(Velocity::linear(Vec2::new(3.0, 1.0)))
+    .insert(Velocity::linear(Vec2::new(3.0, 0.0)))
     .insert(GravityScale(0.0))
     .insert(LockedAxes::ROTATION_LOCKED)
     .insert(ActiveEvents::COLLISION_EVENTS)

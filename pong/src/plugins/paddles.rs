@@ -65,7 +65,7 @@ fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_co
     .insert(Restitution::coefficient(1.0))
     .insert(Friction::coefficient(0.0))
     .insert(GravityScale(0.0))
-    .insert(LockedAxes::ROTATION_LOCKED)
+    .insert(LockedAxes::ROTATION_LOCKED | LockedAxes::TRANSLATION_LOCKED_X)
     .insert(Velocity::default());
 }
 
