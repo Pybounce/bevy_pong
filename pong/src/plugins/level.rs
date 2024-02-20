@@ -184,10 +184,12 @@ fn setup_scoreboard(mut commands: Commands) {
             }),
         ])
         .with_style(Style {
+            width: Val::Auto,
             position_type: PositionType::Absolute,
             display: Display::Flex,
             align_self: AlignSelf::Center,
             justify_self: JustifySelf::Center,
+            justify_content: JustifyContent::SpaceBetween,
             ..default()
         }),
     ));
@@ -195,8 +197,9 @@ fn setup_scoreboard(mut commands: Commands) {
 
 fn update_scoreboard(scoreboard: Res<Scoreboard>, mut query: Query<&mut Text, With<ScoreboardUI>>) {
     let mut text = query.single_mut();
-    text.sections[0].value = scoreboard.left_score.to_string();
-    text.sections[2].value = scoreboard.right_score.to_string();
+
+    text.sections[0].value = format!("{:02}", scoreboard.left_score).to_string();
+    text.sections[2].value = format!("{:02}", scoreboard.right_score).to_string();
 }
 
 
