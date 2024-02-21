@@ -82,3 +82,4 @@ fn check_paddle_collision(
 
     }
 }
+
