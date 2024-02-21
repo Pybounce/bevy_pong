@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use crate::systems::paddle_movement::move_paddle;
 
 pub struct PaddlesPlugin;
 
@@ -8,7 +7,7 @@ impl Plugin for PaddlesPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PreStartup, setup_paddles_config)
         .add_systems(Startup, spawn_paddles)
-        .add_systems(Update, (move_paddle).chain());
+        .add_systems(Update, move_paddle);
 }
 }
 
@@ -79,3 +78,33 @@ fn setup_paddles_config(mut commands: Commands) {
     commands.insert_resource(paddles_config);
 }
 
+fn move_paddle(
+    paddle_config: Res<PaddlesConfig>, 
+    input: Res<ButtonInput<KeyCode>>, 
+    mut query: Query<(&mut Velocity, &Paddle)>
+) 
+{
+    for (mut velocity, paddle) in &mut query {
+        let mut new_velocity: Vec2 = Vec2::default();
+        
+        match paddle {
+            Paddle::LeftPaddle => {
+                if input.pressed(KeyCode::KeyW) {
+                    new_velocity += Vec2::new(0.0, paddle_config.l_paddle.speed as f32);
+                }
+                if input.pressed(KeyCode::KeyS) {
+                    new_velocity -= Vec2::new(0.0, paddle_config.l_paddle.speed as f32);
+                }
+        },
+            Paddle::RightPaddle => {
+                if input.pressed(KeyCode::ArrowUp) {
+                    new_velocity += Vec2::new(0.0, paddle_config.l_paddle.speed as f32);
+                }
+                if input.pressed(KeyCode::ArrowDown) {
+                    new_velocity -= Vec2::new(0.0, paddle_config.l_paddle.speed as f32);
+                }
+            },
+        };
+        velocity.linvel  = new_velocity;
+    }
+}
