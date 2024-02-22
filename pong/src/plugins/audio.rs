@@ -1,18 +1,21 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+use bevy_kira_audio::{Audio as KiraAudio, AudioPlugin as KiraAudioPlugin, AudioSource as KiraAudioSource};
+use bevy_kira_audio::*;
 use super::ball::Ball;
 
 pub struct AudioPlugin;
 
 impl Plugin for AudioPlugin {
         fn build(&self, app: &mut App) {
-        app.add_systems(Startup, load_audio_handles)
+        app.add_plugins(KiraAudioPlugin)
+        .add_systems(Startup, load_audio_handles)
         .add_systems(Update, check_ball_collision);
     }
 }
 #[derive(Resource)]
 struct AudioHandlers {
-    boop: Handle<AudioSource>
+    boop: Handle<KiraAudioSource>
 }
 
 fn load_audio_handles(asset_server: Res<AssetServer>,mut commands: Commands) {
@@ -20,8 +23,8 @@ fn load_audio_handles(asset_server: Res<AssetServer>,mut commands: Commands) {
 }
 
 fn check_ball_collision(
+    audio: Res<KiraAudio>,
     audio_handlers: Res<AudioHandlers>,
-    mut commands: Commands,
     mut collision_events: EventReader<CollisionEvent>,
     ball_query: Query<(), With<Ball>>,
 ) {
@@ -32,10 +35,7 @@ fn check_ball_collision(
         };
 
         if ball_query.get(entity1).is_ok() || ball_query.get(entity2).is_ok() {
-            commands.spawn(AudioBundle {
-                source: audio_handlers.boop.clone(),
-                ..default()
-            });
+            audio.play(audio_handlers.boop.clone());
         }
     }
 }
