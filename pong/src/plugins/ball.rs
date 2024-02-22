@@ -4,6 +4,7 @@ use super::paddles::*;
 
 const BALL_SPEED: f32 = 500.0;
 const BALL_SIZE: Vec2 = Vec2::new(20.0, 20.0);
+const BALL_COUNT: i16 = 10;
 
 pub struct BallPlugin;
 impl Plugin for BallPlugin {
@@ -18,27 +19,31 @@ pub struct Ball;
 
 
 fn spawn_ball(mut commands: Commands) {
-    commands.spawn(SpriteBundle {
-        transform: Transform {
-            translation: Vec3::default(),
-            scale: BALL_SIZE.extend(1.0),
+    for i in 0..BALL_COUNT {
+        let y = (i * 40) - ((BALL_COUNT - 1) * 20);
+        commands.spawn(SpriteBundle {
+            transform: Transform {
+                translation: Vec3::new(0.0, y.into(), 0.0),
+                scale: BALL_SIZE.extend(1.0),
+                ..default()
+            },
+            sprite: Sprite {
+                color: Color::rgb(0.9, 0.9, 0.9),
+                ..default()
+            },
             ..default()
-        },
-        sprite: Sprite {
-            color: Color::rgb(0.9, 0.9, 0.9),
-            ..default()
-        },
-        ..default()
-    })
-    .insert(RigidBody::Dynamic)
-    .insert(Collider::cuboid(0.5, 0.5))
-    .insert(Restitution::coefficient(1.0))
-    .insert(Friction::coefficient(0.0))
-    .insert(Velocity::linear(Vec2::new(3.0, 0.0)))
-    .insert(GravityScale(0.0))
-    .insert(LockedAxes::ROTATION_LOCKED)
-    .insert(ActiveEvents::COLLISION_EVENTS)
-    .insert(Ball);
+        })
+        .insert(RigidBody::Dynamic)
+        .insert(Collider::cuboid(0.5, 0.5))
+        .insert(Restitution::coefficient(1.0))
+        .insert(Friction::coefficient(0.0))
+        .insert(Velocity::linear(Vec2::new(3.0, 0.0)))
+        .insert(GravityScale(0.0))
+        .insert(LockedAxes::ROTATION_LOCKED)
+        .insert(ActiveEvents::COLLISION_EVENTS)
+        .insert(Ball);
+    }
+
 }
 
 fn clamp_velocity(mut query: Query<&mut Velocity, With<Ball>>) {
@@ -59,7 +64,7 @@ fn check_paddle_collision(
             CollisionEvent::Started(_, _, _) => { continue; },
         };
 
-         let (ball_entity, paddle_entity) = if ball_query.get(entity1).is_ok() {
+         let (ball_entity, paddle_entity) = if ball_query.get(entity1).is_ok() && paddle_query.get(entity2).is_ok() {
             (entity1, entity2)
         } else if ball_query.get(entity2).is_ok() && paddle_query.get(entity1).is_ok() {
             (entity2, entity1)
