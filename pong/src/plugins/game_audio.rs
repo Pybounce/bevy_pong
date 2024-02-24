@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use bevy_kira_audio::{Audio as KiraAudio, AudioPlugin as KiraAudioPlugin, AudioSource as KiraAudioSource};
 use bevy_kira_audio::*;
-use crate::{AppState, GameState};
+use super::states::*;
 
 use super::ball::Ball;
 

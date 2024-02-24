@@ -1,8 +1,7 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use crate::{DespawnOnStateExit, GameState};
+use super::states::*;
 
-use super::super::states::AppState;
 
 pub struct PaddlesPlugin;
 
@@ -69,7 +68,7 @@ fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_co
     .insert(GravityScale(0.0))
     .insert(LockedAxes::ROTATION_LOCKED | LockedAxes::TRANSLATION_LOCKED_X)
     .insert(Velocity::default())
-    .insert(DespawnOnStateExit(AppState::Game));
+    .insert(DespawnOnStateExit::App(AppState::Game));
 }
 
 fn setup_paddles_config(mut commands: Commands) {

@@ -1,9 +1,6 @@
 
 use bevy::prelude::*;
-
-use crate::DespawnOnStateExit;
-
-use super::super::{AppState, GameState};
+use super::states::*;
 
 pub struct ScoreboardPlugin;
 
@@ -60,7 +57,7 @@ fn setup_scoreboard(mut commands: Commands) {
             ..default()
         }),
     ))
-    .insert(DespawnOnStateExit(AppState::Game));
+    .insert(DespawnOnStateExit::App(AppState::Game));
 }
 
 fn update_scoreboard(scoreboard: Res<Scoreboard>, mut query: Query<&mut Text, With<ScoreboardUI>>) {
