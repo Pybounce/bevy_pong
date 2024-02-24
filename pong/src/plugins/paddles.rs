@@ -83,7 +83,7 @@ fn setup_paddles_config(mut commands: Commands) {
 }
 
 fn cleanup_paddles_config(mut commands: Commands) {
-    //commands.remove_resource::<PaddlesConfig>();
+    //commands.remove_resource::<PaddlesConfig>();  //TODO: See about linking resource to state
 }
 
 fn move_paddle(

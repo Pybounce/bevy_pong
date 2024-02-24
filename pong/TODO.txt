@@ -7,16 +7,32 @@ with x velocity, and then sign flip the velocity.
 
 - Make the paddle_movement system nicer to read.
 
+-paddles.rs TODO: See about linking resources to state exits
+
+
 
 ______________________Collision______________________
 
-- Collision with paddles should give the ball extra velocity in the opposing direction
-
 - Collision with goals should reset the ball
 
+
+______________________EnemyAI______________________
+
+- Add in OPTIONAL AI for enemy, so probably config with bool stating if it's coop or AI
+- Then run that system only if that config resource is set, then you can switch between mid game too
 
 
 ______________________Tests______________________
 
 - Have a test for state changes / setup+cleanup that checks entities/resources have been removed.
 
+
+______________________Main Menu______________________
+
+- Add nice main menu with click to start or something idk
+
+- Potentially look into making it actually look nice, text fading in and out etc, tweening in general
+
+______________________Game Summary______________________
+
+- New AppState that shows the outcome of the game?
