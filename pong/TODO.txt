@@ -14,3 +14,9 @@ ______________________Collision______________________
 
 - Collision with goals should reset the ball
 
+
+
+______________________Tests______________________
+
+- Have a test for state changes / setup+cleanup that checks entities/resources have been removed.
+

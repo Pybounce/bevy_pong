@@ -1,12 +1,17 @@
 
 use bevy::prelude::*;
 
+use crate::AppStateLifetime;
+
+use super::super::{AppState, GameState};
+
 pub struct ScoreboardPlugin;
 
 impl Plugin for ScoreboardPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_scoreboard);
-        app.add_systems(Update, update_scoreboard);
+        app.add_systems(OnEnter(AppState::Game), setup_scoreboard);
+        app.add_systems(OnExit(AppState::Game), cleanup_scoreboard);
+        app.add_systems(Update, update_scoreboard.run_if(in_state(GameState::UnPaused).and_then(in_state(AppState::Game))));
         }
 }
 
@@ -55,7 +60,15 @@ fn setup_scoreboard(mut commands: Commands) {
             justify_content: JustifyContent::SpaceBetween,
             ..default()
         }),
-    ));
+    ))
+    .insert(AppStateLifetime::Game);
+}
+
+fn cleanup_scoreboard(mut commands: Commands, scoreboard_ui_query: Query<Entity, With<ScoreboardUI>>) {
+    //commands.remove_resource::<Scoreboard>();
+    for entity in scoreboard_ui_query.iter() {
+        //commands.entity(entity).despawn()
+    }
 }
 
 fn update_scoreboard(scoreboard: Res<Scoreboard>, mut query: Query<&mut Text, With<ScoreboardUI>>) {

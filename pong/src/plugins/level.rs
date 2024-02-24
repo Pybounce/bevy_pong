@@ -1,6 +1,8 @@
 
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+
+use super::super::*;
 use super::ball::Ball;
 use super::scoreboard::Scoreboard;
 
@@ -12,14 +14,13 @@ pub enum Goal {
     Right
 }
 
-
 pub struct LevelPlugin;
 
 impl Plugin for LevelPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_level);
-        app.add_systems(Update, check_goal_collisions);
-        }
+        app.add_systems(OnEnter(AppState::Game), setup_level);
+        app.add_systems(Update, check_goal_collisions.run_if(in_state(GameState::UnPaused).and_then(in_state(AppState::Game))));
+    }
 }
 
 
@@ -39,7 +40,8 @@ fn setup_level(mut commands: Commands) {
     })
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
-    .insert(Friction::coefficient(0.0));
+    .insert(Friction::coefficient(0.0))
+    .insert(AppStateLifetime::Game);
 
     commands.spawn(SpriteBundle {
         transform: Transform {
@@ -55,7 +57,8 @@ fn setup_level(mut commands: Commands) {
     })
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
-    .insert(Friction::coefficient(0.0));
+    .insert(Friction::coefficient(0.0))
+    .insert(AppStateLifetime::Game);
 
     commands.spawn(SpriteBundle {
         transform: Transform {
@@ -72,7 +75,8 @@ fn setup_level(mut commands: Commands) {
     .insert(Goal::Left)
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
-    .insert(Friction::coefficient(0.0));
+    .insert(Friction::coefficient(0.0))
+    .insert(AppStateLifetime::Game);
 
     commands.spawn(SpriteBundle {
         transform: Transform {
@@ -89,7 +93,8 @@ fn setup_level(mut commands: Commands) {
     .insert(Goal::Right)
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
-    .insert(Friction::coefficient(0.0));
+    .insert(Friction::coefficient(0.0))
+    .insert(AppStateLifetime::Game);
 
     
     commands.spawn(SpriteBundle {
@@ -103,12 +108,11 @@ fn setup_level(mut commands: Commands) {
             ..default()
         },
         ..default()
-    });
+    })
+    .insert(AppStateLifetime::Game);
 
 
     }
-
-
 
 fn check_goal_collisions(
     mut collision_events: EventReader<CollisionEvent>,

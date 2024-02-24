@@ -1,16 +1,18 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+use crate::{AppState, AppStateLifetime, GameState};
+
 use super::paddles::*;
 
 const BALL_SPEED: f32 = 500.0;
 const BALL_SIZE: Vec2 = Vec2::new(20.0, 20.0);
-const BALL_COUNT: i16 = 10;
+const BALL_COUNT: i16 = 1;
 
 pub struct BallPlugin;
 impl Plugin for BallPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_ball)
-        .add_systems(Update, (clamp_velocity, check_paddle_collision));
+        app.add_systems(OnEnter(AppState::Game), spawn_ball)
+        .add_systems(Update, (clamp_velocity, check_paddle_collision).run_if(in_state(GameState::UnPaused).and_then(in_state(AppState::Game))));
     }
 }
 
@@ -41,7 +43,8 @@ fn spawn_ball(mut commands: Commands) {
         .insert(GravityScale(0.0))
         .insert(LockedAxes::ROTATION_LOCKED)
         .insert(ActiveEvents::COLLISION_EVENTS)
-        .insert(Ball);
+        .insert(Ball)
+        .insert(AppStateLifetime::Game);
     }
 
 }
