@@ -41,7 +41,7 @@ fn setup_level(mut commands: Commands) {
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
     .insert(Friction::coefficient(0.0))
-    .insert(AppStateLifetime::Game);
+    .insert(DespawnOnStateExit(AppState::Game));
 
     commands.spawn(SpriteBundle {
         transform: Transform {
@@ -58,7 +58,7 @@ fn setup_level(mut commands: Commands) {
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
     .insert(Friction::coefficient(0.0))
-    .insert(AppStateLifetime::Game);
+    .insert(DespawnOnStateExit(AppState::Game));
 
     commands.spawn(SpriteBundle {
         transform: Transform {
@@ -76,7 +76,7 @@ fn setup_level(mut commands: Commands) {
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
     .insert(Friction::coefficient(0.0))
-    .insert(AppStateLifetime::Game);
+    .insert(DespawnOnStateExit(AppState::Game));
 
     commands.spawn(SpriteBundle {
         transform: Transform {
@@ -94,7 +94,7 @@ fn setup_level(mut commands: Commands) {
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
     .insert(Friction::coefficient(0.0))
-    .insert(AppStateLifetime::Game);
+    .insert(DespawnOnStateExit(AppState::Game));
 
     
     commands.spawn(SpriteBundle {
@@ -109,9 +109,7 @@ fn setup_level(mut commands: Commands) {
         },
         ..default()
     })
-    .insert(AppStateLifetime::Game);
-
-
+    .insert(DespawnOnStateExit(AppState::Game));
     }
 
 fn check_goal_collisions(

@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use crate::{AppStateLifetime, GameState};
+use crate::{DespawnOnStateExit, GameState};
 
 use super::super::states::AppState;
 
@@ -9,7 +9,7 @@ pub struct PaddlesPlugin;
 impl Plugin for PaddlesPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(AppState::Game), (setup_paddles_config, setup_paddles).chain())
-        .add_systems(OnExit(AppState::Game), (cleanup_paddles_config, cleanup_paddles).chain())
+        .add_systems(OnExit(AppState::Game), cleanup_paddles_config)
         .add_systems(Update, move_paddle.run_if(in_state(GameState::UnPaused).and_then(in_state(AppState::Game))));
 }
 }
@@ -50,12 +50,6 @@ fn setup_paddles(mut commands: Commands, game_config: Res<PaddlesConfig>) {
     spawn_paddle(&mut commands, &game_config.r_paddle, Paddle::RightPaddle);
 }
 
-fn cleanup_paddles(mut commands: Commands, query: Query<Entity, With<Paddle>>) {
-    for entity in query.iter() {
-        //commands.entity(entity).despawn()
-    }
-}
-
 fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_component: Paddle) {
     commands.spawn((paddle_component, SpriteBundle {
         transform: Transform {
@@ -75,7 +69,7 @@ fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_co
     .insert(GravityScale(0.0))
     .insert(LockedAxes::ROTATION_LOCKED | LockedAxes::TRANSLATION_LOCKED_X)
     .insert(Velocity::default())
-    .insert(AppStateLifetime::Game);
+    .insert(DespawnOnStateExit(AppState::Game));
 }
 
 fn setup_paddles_config(mut commands: Commands) {

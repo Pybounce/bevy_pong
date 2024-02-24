@@ -18,7 +18,4 @@ pub enum GameState {
 
 //entities with state lifetime x, will be removed when state x is exited
 #[derive(Component)]
-pub enum AppStateLifetime {
-    Game,
-    MainMenu
-}
+pub struct DespawnOnStateExit(pub AppState);

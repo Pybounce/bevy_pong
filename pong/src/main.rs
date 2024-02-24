@@ -62,10 +62,10 @@ fn switch_states(input: Res<ButtonInput<KeyCode>>, mut app_state: ResMut<NextSta
     }
 }
 
-fn exit_game_app_state_lifetime(mut commands: Commands, query: Query<(Entity, &AppStateLifetime), With<AppStateLifetime>>) {
+fn exit_game_app_state_lifetime(mut commands: Commands, query: Query<(Entity, &DespawnOnStateExit), With<DespawnOnStateExit>>) {
     for (entity, state_lifetime) in query.iter() {
         match state_lifetime {
-            AppStateLifetime::Game => commands.entity(entity).despawn(),
+            DespawnOnStateExit(AppState::Game) => commands.entity(entity).despawn(),
             _ => continue
         }
     }

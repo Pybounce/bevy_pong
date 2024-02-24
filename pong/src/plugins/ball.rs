@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use crate::{AppState, AppStateLifetime, GameState};
+use crate::{AppState, DespawnOnStateExit, GameState};
 
 use super::paddles::*;
 
@@ -44,7 +44,7 @@ fn spawn_ball(mut commands: Commands) {
         .insert(LockedAxes::ROTATION_LOCKED)
         .insert(ActiveEvents::COLLISION_EVENTS)
         .insert(Ball)
-        .insert(AppStateLifetime::Game);
+        .insert(DespawnOnStateExit(AppState::Game));
     }
 
 }
