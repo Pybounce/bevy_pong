@@ -1,11 +1,23 @@
 use bevy::prelude::*;
-
 use bevy::prelude::States;
+
+
+pub struct StatesPlugin;
+
+impl Plugin for StatesPlugin {
+    fn build(&self, app: &mut App) {
+        app.init_state::<AppState>()
+        .init_state::<GameState>()
+        .add_systems(Update, switch_states)
+        .add_systems(Update, check_exit_states);
+    }
+}
+
 
 #[derive(States, Debug, Hash, Eq, PartialEq, Clone, Default)]
 pub enum AppState {
-    #[default]
     Game,
+    #[default]
     MainMenu
 }
 
@@ -22,22 +34,6 @@ pub enum DespawnOnStateExit {
     App(AppState),
     Game(GameState)
 }
-
-
-
-pub struct StatesPlugin;
-
-impl Plugin for StatesPlugin {
-    fn build(&self, app: &mut App) {
-        app.init_state::<AppState>()
-        .init_state::<GameState>()
-        .add_systems(Update, switch_states)
-        .add_systems(Update, check_exit_states);
-    }
-}
-
-
-
 
 
 

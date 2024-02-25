@@ -1,15 +1,7 @@
 
 use bevy::prelude::*;
-use super::states::*;
+use super::super::common::states::*;
 
-pub struct ScoreboardPlugin;
-
-impl Plugin for ScoreboardPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(AppState::Game), setup_scoreboard);
-        app.add_systems(Update, update_scoreboard.run_if(in_state(GameState::UnPaused).and_then(in_state(AppState::Game))));
-        }
-}
 
 #[derive(Resource)]
 pub struct Scoreboard {
@@ -18,9 +10,9 @@ pub struct Scoreboard {
 }
 
 #[derive(Component)]
-struct ScoreboardUI;
+pub struct ScoreboardUI;
 
-fn setup_scoreboard(mut commands: Commands) {
+pub fn setup_scoreboard(mut commands: Commands) {
 
     commands.insert_resource(Scoreboard { left_score: 0, right_score: 0 });
 
@@ -60,7 +52,7 @@ fn setup_scoreboard(mut commands: Commands) {
     .insert(DespawnOnStateExit::App(AppState::Game));
 }
 
-fn update_scoreboard(scoreboard: Res<Scoreboard>, mut query: Query<&mut Text, With<ScoreboardUI>>) {
+pub fn update_scoreboard(scoreboard: Res<Scoreboard>, mut query: Query<&mut Text, With<ScoreboardUI>>) {
     let mut text = query.single_mut();
 
     text.sections[0].value = format!("{:02}", scoreboard.left_score).to_string();

@@ -1,18 +1,16 @@
-mod plugins;
+mod game;
+mod common;
+
 use bevy::winit::UpdateMode;
 use bevy::winit::WinitSettings;
 use bevy_rapier2d::prelude::*;
-use plugins::level::LevelPlugin;
-use plugins::paddles::PaddlesPlugin;
-use plugins::ball::BallPlugin;
-use plugins::scoreboard::ScoreboardPlugin;
-use plugins::game_audio::GameAudioPlugin;
-use plugins::states::StatesPlugin;
 
 use bevy::{
     prelude::*, 
     window::close_on_esc,
 };
+use common::states::StatesPlugin;
+use game::GamePlugin;
 
 
 fn main() {
@@ -35,7 +33,7 @@ fn main() {
     .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
     .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
     //.add_plugins(RapierDebugRenderPlugin::default())
-    .add_plugins((DefaultPlugins.set(window_settings), StatesPlugin, PaddlesPlugin, BallPlugin, LevelPlugin, ScoreboardPlugin, GameAudioPlugin))
+    .add_plugins((DefaultPlugins.set(window_settings), StatesPlugin, GamePlugin))
     .add_systems(Startup, spawn_camera)
     .add_systems(Update, close_on_esc)
     .run();

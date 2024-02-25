@@ -2,9 +2,9 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-use super::states::*;
 use super::ball::Ball;
 use super::scoreboard::Scoreboard;
+use super::super::common::states::*;
 
 const LEVEL_AREA: Vec2 = Vec2::new(1400.0, 700.0);
 
@@ -14,17 +14,7 @@ pub enum Goal {
     Right
 }
 
-pub struct LevelPlugin;
-
-impl Plugin for LevelPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(AppState::Game), setup_level);
-        app.add_systems(Update, check_goal_collisions.run_if(in_state(GameState::UnPaused).and_then(in_state(AppState::Game))));
-    }
-}
-
-
-fn setup_level(mut commands: Commands) {
+pub fn setup_level(mut commands: Commands) {
 
     commands.spawn(SpriteBundle {
         transform: Transform {
@@ -112,7 +102,7 @@ fn setup_level(mut commands: Commands) {
     .insert(DespawnOnStateExit::App(AppState::Game));
     }
 
-fn check_goal_collisions(
+pub fn check_goal_collision(
     mut collision_events: EventReader<CollisionEvent>,
     ball_query: Query<(), With<Ball>>,
     goal_query: Query<&Goal>,

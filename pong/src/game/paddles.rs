@@ -1,17 +1,6 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use super::states::*;
-
-
-pub struct PaddlesPlugin;
-
-impl Plugin for PaddlesPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(AppState::Game), (setup_paddles_config, setup_paddles).chain())
-        .add_systems(OnExit(AppState::Game), cleanup_paddles_config)
-        .add_systems(Update, move_paddle.run_if(in_state(GameState::UnPaused).and_then(in_state(AppState::Game))));
-}
-}
+use super::super::common::states::*;
 
 #[derive(Component)]
 pub enum Paddle {
@@ -44,7 +33,7 @@ impl Default for PaddleConfig {
     }
 }
 
-fn setup_paddles(mut commands: Commands, game_config: Res<PaddlesConfig>) {
+pub fn setup_paddles(mut commands: Commands, game_config: Res<PaddlesConfig>) {
     spawn_paddle(&mut commands, &game_config.l_paddle, Paddle::LeftPaddle);
     spawn_paddle(&mut commands, &game_config.r_paddle, Paddle::RightPaddle);
 }
@@ -71,7 +60,7 @@ fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_co
     .insert(DespawnOnStateExit::App(AppState::Game));
 }
 
-fn setup_paddles_config(mut commands: Commands) {
+pub fn setup_paddles_config(mut commands: Commands) {
     let mut paddles_config = PaddlesConfig::default();
     paddles_config.l_paddle.position.x = -500.0;
     paddles_config.l_paddle.colour = Color::rgb(0.9, 0.9, 0.9);
@@ -81,11 +70,11 @@ fn setup_paddles_config(mut commands: Commands) {
     commands.insert_resource(paddles_config);
 }
 
-fn cleanup_paddles_config(mut commands: Commands) {
+pub fn cleanup_paddles_config(mut commands: Commands) {
     commands.remove_resource::<PaddlesConfig>();  //TODO: See about linking resource to state
 }
 
-fn move_paddle(
+pub fn move_paddle(
     paddle_config: Res<PaddlesConfig>, 
     input: Res<ButtonInput<KeyCode>>, 
     mut query: Query<(&mut Velocity, &Paddle)>
