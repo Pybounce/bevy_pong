@@ -1,5 +1,6 @@
 mod game;
 mod common;
+mod main_menu;
 
 use bevy::winit::UpdateMode;
 use bevy::winit::WinitSettings;
@@ -12,7 +13,7 @@ use bevy::{
 };
 use common::states::StatesPlugin;
 use game::GamePlugin;
-
+use main_menu::MainMenuPlugin;
 
 fn main() {
     let winit_settings = WinitSettings {
@@ -34,7 +35,7 @@ fn main() {
     .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
     .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
     //.add_plugins(RapierDebugRenderPlugin::default())
-    .add_plugins((DefaultPlugins.set(window_settings), KiraAudioPlugin, StatesPlugin, GamePlugin))
+    .add_plugins((DefaultPlugins.set(window_settings), KiraAudioPlugin, StatesPlugin, MainMenuPlugin, GamePlugin))
     .add_systems(Startup, spawn_camera)
     .add_systems(Update, close_on_esc)
     .run();
