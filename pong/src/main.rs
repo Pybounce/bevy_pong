@@ -4,6 +4,7 @@ mod common;
 use bevy::winit::UpdateMode;
 use bevy::winit::WinitSettings;
 use bevy_rapier2d::prelude::*;
+use bevy_kira_audio::AudioPlugin as KiraAudioPlugin;
 
 use bevy::{
     prelude::*, 
@@ -33,7 +34,7 @@ fn main() {
     .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
     .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
     //.add_plugins(RapierDebugRenderPlugin::default())
-    .add_plugins((DefaultPlugins.set(window_settings), StatesPlugin, GamePlugin))
+    .add_plugins((DefaultPlugins.set(window_settings), KiraAudioPlugin, StatesPlugin, GamePlugin))
     .add_systems(Startup, spawn_camera)
     .add_systems(Update, close_on_esc)
     .run();
