@@ -38,10 +38,10 @@ pub enum DespawnOnStateExit {
 
 
 fn switch_states(input: Res<ButtonInput<KeyCode>>, mut app_state: ResMut<NextState<AppState>>) {
-    if input.just_pressed(KeyCode::KeyG) {
+    if input.just_released(KeyCode::KeyG) {
         app_state.set(AppState::Game);
     }
-    if input.just_pressed(KeyCode::KeyM) {
+    if input.just_released(KeyCode::KeyM) {
         app_state.set(AppState::MainMenu);
     }
 }
