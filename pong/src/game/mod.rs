@@ -3,6 +3,7 @@ pub mod ball;
 pub mod level;
 pub mod scoreboard;
 pub mod game_audio;
+pub mod win_conditions;
 
 use bevy::prelude::*;
 
@@ -11,6 +12,8 @@ use self::game_audio::*;
 use self::level::*;
 use self::paddles::*;
 use self::scoreboard::*;
+use self::win_conditions::*;
+use self::win_conditions::GameFinishEvent;
 use super::common::states::*;
 
 
@@ -18,6 +21,7 @@ pub struct GamePlugin;
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app
+        .add_event::<GameFinishEvent>()
         .add_systems(OnEnter(AppState::Game), (
             setup_level,
             spawn_ball,
@@ -35,7 +39,9 @@ impl Plugin for GamePlugin {
             check_ball_collision,
             check_goal_collision,
             move_paddle,
-            update_scoreboard
+            update_scoreboard,
+            check_score_win_condition,
+            check_win_condition_events
         ).run_if(in_state(GameState::UnPaused).and_then(in_state(AppState::Game))));
     }
 }
