@@ -2,6 +2,7 @@ mod game;
 mod common;
 mod main_menu;
 
+use bevy::core_pipeline::bloom::BloomSettings;
 use bevy::winit::UpdateMode;
 use bevy::winit::WinitSettings;
 use bevy_rapier2d::prelude::*;
@@ -32,7 +33,7 @@ fn main() {
 
     App::new()
     .insert_resource(winit_settings)
-    .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
+    .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
     .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
     //.add_plugins(RapierDebugRenderPlugin::default())
     .add_plugins((DefaultPlugins.set(window_settings), KiraAudioPlugin, StatesPlugin, MainMenuPlugin, GamePlugin))
@@ -44,7 +45,13 @@ fn main() {
 
 
 fn spawn_camera(mut commands: Commands) {
-    commands.spawn(Camera2dBundle::default());
+    commands.spawn(Camera2dBundle {
+            camera: Camera {
+                hdr: true,
+                ..default()
+            },
+            ..default()
+        }).insert(BloomSettings::default());
 }
 
 

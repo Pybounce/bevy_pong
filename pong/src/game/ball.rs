@@ -7,6 +7,7 @@ use super::paddles::*;
 const BALL_SPEED: f32 = 500.0;
 const BALL_SIZE: Vec2 = Vec2::new(20.0, 20.0);
 const BALL_COUNT: i16 = 1;
+const BALL_COLOUR: Color = Color::rgb(2.0, 2.0, 2.0);
 
 #[derive(Component)]
 pub struct Ball;
@@ -22,7 +23,7 @@ pub fn spawn_ball(mut commands: Commands) {
                 ..default()
             },
             sprite: Sprite {
-                color: Color::rgb(0.9, 0.9, 0.9),
+                color: BALL_COLOUR,
                 ..default()
             },
             ..default()

@@ -63,9 +63,9 @@ fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_co
 pub fn setup_paddles_config(mut commands: Commands) {
     let mut paddles_config = PaddlesConfig::default();
     paddles_config.l_paddle.position.x = -500.0;
-    paddles_config.l_paddle.colour = Color::rgb(0.9, 0.9, 0.9);
+    paddles_config.l_paddle.colour = Color::rgb(1.3, 1.3, 1.3);
     paddles_config.r_paddle.position.x = 500.0;
-    paddles_config.r_paddle.colour = Color::rgb(0.9, 0.9, 0.9);
+    paddles_config.r_paddle.colour = Color::rgb(1.3, 1.3, 1.3);
 
     commands.insert_resource(paddles_config);
 }

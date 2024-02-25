@@ -87,6 +87,7 @@ pub fn setup_level(mut commands: Commands) {
     .insert(DespawnOnStateExit::App(AppState::Game));
 
     
+    //background-inside
     commands.spawn(SpriteBundle {
         transform: Transform {
             translation: Vec2::default().extend(-100.0),
@@ -94,13 +95,30 @@ pub fn setup_level(mut commands: Commands) {
             ..default()
         },
         sprite: Sprite {
-            color: Color::rgba(0.15, 0.15, 0.15, 1.0),
+            color: Color::rgb(0.0, 0.0, 0.0),
             ..default()
         },
         ..default()
     })
     .insert(DespawnOnStateExit::App(AppState::Game));
-    }
+    //background-outside (border)
+    commands.spawn(SpriteBundle {
+        transform: Transform {
+            translation: Vec2::default().extend(-110.0),
+            scale: Vec3::new(LEVEL_AREA.x + 2.0, LEVEL_AREA.y + 2.0, 1.0),
+            ..default()
+        },
+        sprite: Sprite {
+            color: Color::rgb(2.5, 2.5, 2.5),
+            ..default()
+        },
+        ..default()
+    })
+    .insert(DespawnOnStateExit::App(AppState::Game));
+
+
+
+}
 
 pub fn check_goal_collision(
     mut collision_events: EventReader<CollisionEvent>,

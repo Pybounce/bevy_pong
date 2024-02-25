@@ -21,20 +21,20 @@ pub fn setup_scoreboard(mut commands: Commands) {
         TextBundle::from_sections([
             TextSection::from_style(TextStyle {
                 font_size: 128.0,
-                color: Color::rgb(0.5, 0.5, 0.5),
+                color: Color::rgb(1.2, 1.2, 1.2),
                 ..default()
             }),
             TextSection::new(
                 "         ",
                 TextStyle {
                     font_size: 128.0,
-                    color: Color::rgb(0.5, 0.5, 0.5),
+                    color: Color::rgb(12.5, 2.5, 12.5),
                     ..default()
                 },
             ),
             TextSection::from_style(TextStyle {
                 font_size: 128.0,
-                color: Color::rgb(0.5, 0.5, 0.5),
+                color: Color::rgb(1.0, 1.0, 1.0),
                 ..default()
             }),
         ])
