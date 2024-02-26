@@ -4,7 +4,7 @@ use super::super::common::states::*;
 
 use super::paddles::*;
 
-const BALL_SPEED: f32 = 500.0;
+const BALL_SPEED: f32 = 750.0;
 const BALL_SIZE: Vec2 = Vec2::new(20.0, 20.0);
 const BALL_COUNT: i16 = 1;
 const BALL_COLOUR: Color = Color::rgb(2.0, 2.0, 2.0);

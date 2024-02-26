@@ -28,7 +28,7 @@ impl Default for PaddleConfig {
             colour: Color::rgb(1.0, 1.0, 1.0),
             size: Vec2::new(20.0, 100.0),
             position: Vec2::new(0.0, 0.0),
-            speed: 300
+            speed: 500
         }
     }
 }

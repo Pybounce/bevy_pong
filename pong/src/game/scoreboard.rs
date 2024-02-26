@@ -1,6 +1,6 @@
 
 use bevy::prelude::*;
-use super::super::common::states::*;
+use super::{super::common::states::*, LEVEL_AREA};
 
 
 #[derive(Resource)]
@@ -18,38 +18,33 @@ pub fn setup_scoreboard(mut commands: Commands) {
 
     commands.spawn((
         ScoreboardUI,
-        TextBundle::from_sections([
+        Text2dBundle {
+        text: Text::from_sections([
             TextSection::from_style(TextStyle {
                 font_size: 128.0,
-                color: Color::rgb(1.2, 1.2, 1.2),
-                ..default()
+                color: Color::rgb(1.0, 1.0, 1.0),
+                ..Default::default()
             }),
             TextSection::new(
                 "         ",
                 TextStyle {
                     font_size: 128.0,
-                    color: Color::rgb(12.5, 2.5, 12.5),
-                    ..default()
+                    color: Color::rgb(1.0, 1.0, 1.0),
+                    ..Default::default()
                 },
             ),
             TextSection::from_style(TextStyle {
                 font_size: 128.0,
                 color: Color::rgb(1.0, 1.0, 1.0),
-                ..default()
+                ..Default::default()
             }),
-        ])
-        .with_style(Style {
-            width: Val::Auto,
-            position_type: PositionType::Absolute,
-            margin: UiRect {bottom: Val::Px(400.0), ..default()},
-            display: Display::Flex,
-            align_self: AlignSelf::Center,
-            justify_self: JustifySelf::Center,
-            justify_content: JustifyContent::SpaceBetween,
-            ..default()
-        }),
+        ]),
+        transform: Transform::from_xyz(0.0, LEVEL_AREA.y / 3.0, 0.0),
+        ..default()
+        }
     ))
     .insert(DespawnOnStateExit::App(AppState::Game));
+
 }
 
 pub fn update_scoreboard(scoreboard: Res<Scoreboard>, mut query: Query<&mut Text, With<ScoreboardUI>>) {

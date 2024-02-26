@@ -6,7 +6,7 @@ use super::ball::Ball;
 use super::scoreboard::Scoreboard;
 use super::super::common::states::*;
 
-const LEVEL_AREA: Vec2 = Vec2::new(1400.0, 700.0);
+pub const LEVEL_AREA: Vec2 = Vec2::new(1400.0, 700.0);
 
 #[derive(Component)]
 pub enum Goal {
@@ -105,7 +105,7 @@ pub fn setup_level(mut commands: Commands) {
     commands.spawn(SpriteBundle {
         transform: Transform {
             translation: Vec2::default().extend(-110.0),
-            scale: Vec3::new(LEVEL_AREA.x + 2.0, LEVEL_AREA.y + 2.0, 1.0),
+            scale: Vec3::new(LEVEL_AREA.x + 5.0, LEVEL_AREA.y + 5.0, 1.0),
             ..default()
         },
         sprite: Sprite {

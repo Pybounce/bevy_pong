@@ -4,10 +4,13 @@ pub mod level;
 pub mod scoreboard;
 pub mod game_audio;
 pub mod win_conditions;
+pub mod camera;
 
 use bevy::prelude::*;
+use bevy_rapier2d::plugin::RapierPhysicsPlugin;
 
 use self::ball::*;
+use self::camera::*;
 use self::game_audio::*;
 use self::level::*;
 use self::paddles::*;
@@ -31,7 +34,8 @@ impl Plugin for GamePlugin {
         ))
         .add_systems(OnExit(AppState::Game), (
             cleanup_audio_handlers,
-            cleanup_paddles_config
+            cleanup_paddles_config,
+            reset_camera_position
         ))
         .add_systems(Update, (
             clamp_velocity,
@@ -41,7 +45,8 @@ impl Plugin for GamePlugin {
             move_paddle,
             update_scoreboard,
             check_score_win_condition,
-            check_win_condition_events
+            check_win_condition_events,
+            update_camera_position
         ).run_if(in_state(GameState::UnPaused).and_then(in_state(AppState::Game))));
     }
 }
