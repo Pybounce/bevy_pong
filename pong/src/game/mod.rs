@@ -7,7 +7,6 @@ pub mod win_conditions;
 pub mod camera;
 
 use bevy::prelude::*;
-use bevy_rapier2d::plugin::RapierPhysicsPlugin;
 
 use self::ball::*;
 use self::camera::*;

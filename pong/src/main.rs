@@ -5,7 +5,6 @@ mod main_menu;
 use bevy::core_pipeline::bloom::BloomSettings;
 use bevy::winit::UpdateMode;
 use bevy::winit::WinitSettings;
-use bevy_rapier2d::na::Translation;
 use bevy_rapier2d::prelude::*;
 use bevy_kira_audio::AudioPlugin as KiraAudioPlugin;
 
