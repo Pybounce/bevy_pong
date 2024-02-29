@@ -1,56 +1,65 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use super::super::common::states::*;
+use super::{super::common::states::*, Ball};
 
 #[derive(Component)]
-pub enum Paddle {
-    RightPaddle,
-    LeftPaddle
+pub struct Paddle {
+    max_speed: f32,
 }
-
-#[derive(Resource, Default)]
-pub struct PaddlesConfig
-{
-    pub l_paddle: PaddleConfig,
-    pub r_paddle: PaddleConfig
-}
-
-pub struct PaddleConfig {
-    pub colour: Color,
-    pub size: Vec2,
-    pub position: Vec2,
-    pub speed: i32
-}
-
-impl Default for PaddleConfig {
+impl Default for Paddle {
     fn default() -> Self {
         Self {
-            colour: Color::rgb(1.0, 1.0, 1.0),
-            size: Vec2::new(20.0, 100.0),
-            position: Vec2::new(0.0, 0.0),
-            speed: 500
+            max_speed: 500.0
         }
     }
 }
 
-pub fn setup_paddles(mut commands: Commands, game_config: Res<PaddlesConfig>) {
-    spawn_paddle(&mut commands, &game_config.l_paddle, Paddle::LeftPaddle);
-    spawn_paddle(&mut commands, &game_config.r_paddle, Paddle::RightPaddle);
+
+#[derive(Component)]
+pub struct PlayerPaddle {
+    move_up_key: KeyCode,
+    move_down_key: KeyCode
+}
+impl Default for PlayerPaddle {
+    fn default() -> Self {
+        Self { 
+            move_up_key: KeyCode::KeyW,
+            move_down_key: KeyCode::KeyS
+        }
+    }
+}
+#[derive(Component, Default)]
+pub struct AIPaddle {
+
 }
 
-fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_component: Paddle) {
-    commands.spawn((paddle_component, SpriteBundle {
+
+pub fn setup_paddles(mut commands: Commands) {
+    spawn_paddle(&mut commands, true);
+    spawn_paddle(&mut commands, false);
+}
+
+fn spawn_paddle(commands: &mut Commands, is_player_paddle: bool) {
+    let pos: Vec3;
+    if is_player_paddle {
+        pos = Vec3::new(-500.0, 0.0, 0.0);
+    }
+    else {
+        pos = Vec3::new(500.0, 0.0, 0.0);
+    }
+    let mut paddle = commands.spawn(SpriteBundle {
         transform: Transform {
-            translation: paddle_config.position.extend(0.0),
-            scale: paddle_config.size.extend(1.0),
+            translation: pos,
+            scale: Vec3::new(20.0, 100.0, 0.0),
             ..default()
         },
         sprite: Sprite {
-            color: paddle_config.colour.into(),
+            color: Color::rgb(2.0, 2.0, 2.0),
             ..default()
         },
         ..default()
-    })).insert(RigidBody::Dynamic)
+    });
+    paddle.insert(RigidBody::Dynamic)
     .insert(Collider::cuboid(0.5, 0.5))
     .insert(Restitution::coefficient(1.0))
     .insert(Friction::coefficient(0.0))
@@ -58,49 +67,64 @@ fn spawn_paddle(commands: &mut Commands, paddle_config: &PaddleConfig, paddle_co
     .insert(LockedAxes::ROTATION_LOCKED | LockedAxes::TRANSLATION_LOCKED_X)
     .insert(Velocity::default())
     .insert(DespawnOnStateExit::App(AppState::Game));
+    if is_player_paddle {
+        paddle.insert(PlayerPaddle::default());
+        paddle.insert(Paddle::default());
+    }
+    else {
+        paddle.insert(AIPaddle::default());
+        paddle.insert(Paddle { max_speed: 350.0 });
+    }
 }
 
-pub fn setup_paddles_config(mut commands: Commands) {
-    let mut paddles_config = PaddlesConfig::default();
-    paddles_config.l_paddle.position.x = -500.0;
-    paddles_config.l_paddle.colour = Color::rgb(1.3, 1.3, 1.3);
-    paddles_config.r_paddle.position.x = 500.0;
-    paddles_config.r_paddle.colour = Color::rgb(1.3, 1.3, 1.3);
 
-    commands.insert_resource(paddles_config);
-}
-
-pub fn cleanup_paddles_config(mut commands: Commands) {
-    commands.remove_resource::<PaddlesConfig>();  //TODO: See about linking resource to state
-}
-
-pub fn move_paddle(
-    paddle_config: Res<PaddlesConfig>, 
+pub fn move_paddles(
     input: Res<ButtonInput<KeyCode>>, 
-    mut query: Query<(&mut Velocity, &Paddle)>
-) 
-{
-    for (mut velocity, paddle) in &mut query {
-        let mut new_velocity: Vec2 = Vec2::default();
-        
-        match paddle {
-            Paddle::LeftPaddle => {
-                if input.pressed(KeyCode::KeyW) {
-                    new_velocity += Vec2::new(0.0, paddle_config.l_paddle.speed as f32);
-                }
-                if input.pressed(KeyCode::KeyS) {
-                    new_velocity -= Vec2::new(0.0, paddle_config.l_paddle.speed as f32);
-                }
-        },
-            Paddle::RightPaddle => {
-                if input.pressed(KeyCode::ArrowUp) {
-                    new_velocity += Vec2::new(0.0, paddle_config.r_paddle.speed as f32);
-                }
-                if input.pressed(KeyCode::ArrowDown) {
-                    new_velocity -= Vec2::new(0.0, paddle_config.r_paddle.speed as f32);
-                }
-            },
+    mut paddle_query: Query<(&mut Velocity, &Transform, &Paddle, Option<&PlayerPaddle>, Option<&AIPaddle>)>,
+    ball_query: Query<(&Velocity, &Transform), (With<Ball>, Without<Paddle>)>
+) {
+    let balls: Vec<(&Velocity, &Transform)> = ball_query.iter().collect();
+
+    for (mut v, t, paddle_data, player_control_data, ai_control_data) in &mut paddle_query {
+        v.linvel = Vec2::default();
+
+        if let Some(x) = player_control_data {
+            if input.pressed(x.move_up_key) {
+                v.linvel += Vec2::new(0.0, paddle_data.max_speed);
+            }
+            if input.pressed(x.move_down_key) {
+                v.linvel -= Vec2::new(0.0, paddle_data.max_speed);
+            }
         };
-        velocity.linvel  = new_velocity;
+
+        
+
+        if let Some(_) = ai_control_data {
+            let mut ai_velocity_delta = Vec2::default();
+            let mut current_ball_x_delta = f32::MAX;  //Distance of the current target ball from the paddle
+            let mut current_ball_y_pos = f32::MAX;  //Distance of the current target ball from the paddle
+
+            for (bv, bt) in &balls {
+                let x_delta = t.translation.x - bt.translation.x;
+                if (x_delta / x_delta.abs()) != (bv.linvel.x / bv.linvel.x.abs()) { continue; }
+                if (current_ball_x_delta - x_delta).abs() < 5.0 && current_ball_y_pos < bt.translation.y { 
+                    continue;
+                }
+                if x_delta > current_ball_x_delta { continue; }
+                ai_velocity_delta = Vec2::default();
+                current_ball_x_delta = x_delta;
+                current_ball_y_pos = bt.translation.y;
+                if bt.translation.y > t.translation.y + 30.0 {
+                    ai_velocity_delta += Vec2::new(0.0, paddle_data.max_speed);
+                }
+                else if bt.translation.y < t.translation.y - 30.0 {
+                    ai_velocity_delta -= Vec2::new(0.0, paddle_data.max_speed);
+                }
+            }
+            v.linvel += ai_velocity_delta;
+        }
+
+        v.linvel = v.linvel.clamp(Vec2::new(0.0, -paddle_data.max_speed), Vec2::new(0.0, paddle_data.max_speed));
+
     }
 }

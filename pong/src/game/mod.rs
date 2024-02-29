@@ -25,15 +25,15 @@ impl Plugin for GamePlugin {
         app
         .add_event::<GameFinishEvent>()
         .add_systems(OnEnter(AppState::Game), (
+            reset_camera_position,
             setup_level,
             spawn_ball,
             load_audio_handlers,
-            (setup_paddles_config, setup_paddles).chain(),
+            setup_paddles,
             setup_scoreboard
         ))
         .add_systems(OnExit(AppState::Game), (
             cleanup_audio_handlers,
-            cleanup_paddles_config,
             reset_camera_position
         ))
         .add_systems(Update, (
@@ -41,7 +41,7 @@ impl Plugin for GamePlugin {
             check_paddle_collision,
             check_ball_collision,
             check_goal_collision,
-            move_paddle,
+            move_paddles,
             update_scoreboard,
             check_score_win_condition,
             check_win_condition_events,

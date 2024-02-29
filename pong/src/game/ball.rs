@@ -32,7 +32,7 @@ pub fn spawn_ball(mut commands: Commands) {
         .insert(Collider::cuboid(0.5, 0.5))
         .insert(Restitution::coefficient(1.0))
         .insert(Friction::coefficient(0.0))
-        .insert(Velocity::linear(Vec2::new(3.0, 0.0)))
+        .insert(Velocity::linear(Vec2::new(0.5 - (i % 2) as f32, 0.0)))
         .insert(GravityScale(0.0))
         .insert(LockedAxes::ROTATION_LOCKED)
         .insert(ActiveEvents::COLLISION_EVENTS)
@@ -50,9 +50,8 @@ pub fn clamp_velocity(mut query: Query<&mut Velocity, With<Ball>>) {
 
 pub fn check_paddle_collision(
     mut collision_events: EventReader<CollisionEvent>,
-    paddles_config: Res<PaddlesConfig>,
     mut ball_query: Query<(&mut Velocity, &Transform), With<Ball>>,
-    paddle_query: Query<(&Paddle, &Transform)>,
+    paddle_query: Query<&Transform, With<Paddle>>,
 ) {
     for collision_event in collision_events.read() {
         let (entity1, entity2) = match collision_event {
@@ -68,14 +67,10 @@ pub fn check_paddle_collision(
             continue;
         };
 
-        let (paddle, paddle_transform) = paddle_query.get(paddle_entity).unwrap();
-        let paddle_size_y = match paddle {
-            Paddle::LeftPaddle => paddles_config.l_paddle.size.y,
-            Paddle::RightPaddle => paddles_config.r_paddle.size.y
-        };
+        let paddle_transform = paddle_query.get(paddle_entity).unwrap();
         let (mut ball_velocity, ball_transform) = ball_query.get_mut(ball_entity).unwrap();
         let y_diff = ball_transform.translation.y - paddle_transform.translation.y;
-        let y_diff_normalised = y_diff / paddle_size_y * 2.0;
+        let y_diff_normalised = y_diff / paddle_transform.scale.y * 2.0;
         let y = (y_diff_normalised * 0.5).min(0.5).max(-0.5);
         let x = (1.0 - y.abs()) * ball_velocity.linvel.x.signum();
 
