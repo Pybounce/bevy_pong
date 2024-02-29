@@ -94,10 +94,10 @@ pub fn move_paddle(
         },
             Paddle::RightPaddle => {
                 if input.pressed(KeyCode::ArrowUp) {
-                    new_velocity += Vec2::new(0.0, paddle_config.l_paddle.speed as f32);
+                    new_velocity += Vec2::new(0.0, paddle_config.r_paddle.speed as f32);
                 }
                 if input.pressed(KeyCode::ArrowDown) {
-                    new_velocity -= Vec2::new(0.0, paddle_config.l_paddle.speed as f32);
+                    new_velocity -= Vec2::new(0.0, paddle_config.r_paddle.speed as f32);
                 }
             },
         };
