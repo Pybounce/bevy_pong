@@ -66,14 +66,13 @@ fn spawn_paddle(commands: &mut Commands, is_player_paddle: bool) {
     .insert(GravityScale(0.0))
     .insert(LockedAxes::ROTATION_LOCKED | LockedAxes::TRANSLATION_LOCKED_X)
     .insert(Velocity::default())
+    .insert(Paddle::default())
     .insert(DespawnOnStateExit::App(AppState::Game));
     if is_player_paddle {
         paddle.insert(PlayerPaddle::default());
-        paddle.insert(Paddle::default());
     }
     else {
         paddle.insert(AIPaddle::default());
-        paddle.insert(Paddle { max_speed: 350.0 });
     }
 }
 

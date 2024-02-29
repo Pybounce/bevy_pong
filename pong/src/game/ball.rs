@@ -8,9 +8,12 @@ const BALL_SPEED: f32 = 750.0;
 const BALL_SIZE: Vec2 = Vec2::new(20.0, 20.0);
 const BALL_COUNT: i16 = 1;
 const BALL_COLOUR: Color = Color::rgb(2.0, 2.0, 2.0);
+const BALL_ACCELERATION: f32 = 50.0;
 
 #[derive(Component)]
-pub struct Ball;
+pub struct Ball {
+    pub max_velocity: f32
+}
 
 
 pub fn spawn_ball(mut commands: Commands) {
@@ -36,21 +39,21 @@ pub fn spawn_ball(mut commands: Commands) {
         .insert(GravityScale(0.0))
         .insert(LockedAxes::ROTATION_LOCKED)
         .insert(ActiveEvents::COLLISION_EVENTS)
-        .insert(Ball)
+        .insert(Ball { max_velocity: BALL_SPEED })
         .insert(DespawnOnStateExit::App(AppState::Game));
     }
 
 }
 
-pub fn clamp_velocity(mut query: Query<&mut Velocity, With<Ball>>) {
-    for mut velocity in &mut query {
-        velocity.linvel = (velocity.linvel).normalize() * BALL_SPEED;
+pub fn clamp_velocity(mut query: Query<(&mut Velocity, &Ball)>) {
+    for (mut velocity, ball) in &mut query {
+        velocity.linvel = (velocity.linvel).normalize() * ball.max_velocity;
     }
 }
 
 pub fn check_paddle_collision(
     mut collision_events: EventReader<CollisionEvent>,
-    mut ball_query: Query<(&mut Velocity, &Transform), With<Ball>>,
+    mut ball_query: Query<(&mut Velocity, &Transform, &mut Ball)>,
     paddle_query: Query<&Transform, With<Paddle>>,
 ) {
     for collision_event in collision_events.read() {
@@ -68,13 +71,13 @@ pub fn check_paddle_collision(
         };
 
         let paddle_transform = paddle_query.get(paddle_entity).unwrap();
-        let (mut ball_velocity, ball_transform) = ball_query.get_mut(ball_entity).unwrap();
+        let (mut ball_velocity, ball_transform, mut ball) = ball_query.get_mut(ball_entity).unwrap();
         let y_diff = ball_transform.translation.y - paddle_transform.translation.y;
         let y_diff_normalised = y_diff / paddle_transform.scale.y * 2.0;
         let y = (y_diff_normalised * 0.5).min(0.5).max(-0.5);
         let x = (1.0 - y.abs()) * ball_velocity.linvel.x.signum();
-
-        ball_velocity.linvel = (Vec2::new(x, y)) * BALL_SPEED;
+        ball.max_velocity += BALL_ACCELERATION;
+        ball_velocity.linvel = (Vec2::new(x, y)) * ball.max_velocity;
 
     }
 }
