@@ -124,7 +124,8 @@ pub fn check_goal_collision(
     mut collision_events: EventReader<CollisionEvent>,
     ball_query: Query<(), With<Ball>>,
     goal_query: Query<&Goal>,
-    mut scoreboard: ResMut<Scoreboard>
+    mut scoreboard: ResMut<Scoreboard>,
+    mut game_state: ResMut<NextState<GameState>>
 ) {
         for collision_event in collision_events.read() {
 
@@ -151,6 +152,7 @@ pub fn check_goal_collision(
                         scoreboard.left_score += 1;
                     },
                 }
+                game_state.set(GameState::Resetting);
             }
         }
     }
