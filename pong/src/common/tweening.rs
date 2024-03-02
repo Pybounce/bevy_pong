@@ -13,23 +13,10 @@ impl Plugin for TweenPlugin {
 
 #[derive(Component)]
 pub struct PositionTween {
-    start_time: f32,
-    duration: f32,
-    velocity: Vec3,
-}
-
-impl PositionTween {
-    pub fn new(start_time: f32, duration: f32, offset: Vec3) -> Self {
-        let speed = offset.length() / duration;
-        let mut vel: Vec3 = offset.normalize() * speed;
-        if offset.length() <= 0.0 { vel = Vec3::default(); }
-
-        return Self {
-            start_time,
-            duration,
-            velocity: vel
-        }
-    }
+    pub start_time: f32,
+    pub duration: f32,
+    pub start_pos: Vec3,
+    pub target_pos: Vec3,
 }
 
 fn tween_positions(
@@ -40,9 +27,14 @@ fn tween_positions(
     for (mut tranform, tween_data, e) in &mut query {
         let lerp_t = (time.elapsed_seconds() - tween_data.start_time) / tween_data.duration;
         if lerp_t <= 0.0 { continue; }    //start time not reached yet
-        if lerp_t > 1.0 { commands.entity(e).remove::<PositionTween>(); }   //remove component?
 
-        tranform.translation += tween_data.velocity * time.delta_seconds();
+        let offset = (tween_data.target_pos - tween_data.start_pos) * lerp_t;
+        tranform.translation = tween_data.start_pos + offset;
+
+        if lerp_t >= 1.0 { 
+            tranform.translation = tween_data.target_pos;   //this doesn't work with multiple!!!
+            commands.entity(e).remove::<PositionTween>(); 
+        }
     }
 }
 

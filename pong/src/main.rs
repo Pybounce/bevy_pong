@@ -53,7 +53,7 @@ fn spawn_camera(mut commands: Commands) {
                 ..default()
             },
             transform: Transform {
-                translation: Vec3::new(100.0, 0.0, 0.0),
+                translation: Vec3::new(0.0, 0.0, 0.0),
                 ..default()
             },
             ..default()

@@ -30,15 +30,20 @@ pub fn check_reset_state_end(reset_data: Res<GameResetData>, time: Res<Time>, mu
 ///so I can't name stuff well, fuck off
 pub fn start_resetting(
     mut commands: Commands,
-    mut query: Query<(Entity, &ScoreTranslationLerpReset, &Transform), With<RigidBody>>,
+    mut query: Query<(Entity, &ScoreTranslationLerpReset, &Transform)>,
     reset_data: Res<GameResetData>,
     time: Res<Time> 
 ) {
     for (e, lerp_reset_data, transform) in &mut query {
-        let reset_position_offset = lerp_reset_data.reset_translation - transform.translation;
+            warn!("reset pos {}", lerp_reset_data.reset_translation);
         commands.entity(e)
         .insert(RigidBodyDisabled)
-        .insert(PositionTween::new(time.elapsed_seconds(), reset_data.end_time - time.elapsed_seconds(), reset_position_offset));
+        .insert(PositionTween { 
+            start_time: time.elapsed_seconds(), 
+            duration: reset_data.end_time - time.elapsed_seconds(), 
+            start_pos: transform.translation, 
+            target_pos: lerp_reset_data.reset_translation
+         });
     }
 }
 pub fn finish_resetting(
@@ -57,24 +62,5 @@ pub fn reset_ball_data(
         let y: f32 = thread_rng().gen::<f32>() - 0.5;
         let x: f32 = 1.0 - y.abs(); //always positive x towards enemy
         velocity.linvel = Vec2::new(x, y) * ball.current_max_velocity;
-    }
-}
-pub fn translation_lerp_score_reset(
-    mut query: Query<(&mut Transform, &ScoreTranslationLerpReset)>,
-    reset_data: Res<GameResetData>, 
-    time: Res<Time> 
-) {
-    const OK_DISTANCE: f32 = 0.01;
-    let time_remaining = reset_data.end_time - time.elapsed_seconds();
-    if time_remaining <= 0.0 { return; }
-
-    for (mut transform, lerp_reset_data) in &mut query {
-        let delta = lerp_reset_data.reset_translation - transform.translation;
-        let dist = delta.length();
-        if dist < OK_DISTANCE { continue; }
-        let speed = dist / time_remaining.max(0.001);
-        let mut step = delta.normalize() * speed * time.delta_seconds();
-        if step.length() > dist { step = delta; }
-        transform.translation += step;
     }
 }
