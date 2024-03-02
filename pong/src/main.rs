@@ -13,7 +13,7 @@ use bevy::{
     window::close_on_esc,
 };
 use common::states::StatesPlugin;
-use game::shared::ScoreTranslationLerpReset;
+use game::reset::ScoreTranslationLerpReset;
 use game::GamePlugin;
 use main_menu::MainMenuPlugin;
 

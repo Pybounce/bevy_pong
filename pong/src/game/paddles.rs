@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use super::{super::common::states::*, shared::ScoreTranslationLerpReset, Ball};
+use super::{super::common::states::*, reset::ScoreTranslationLerpReset, Ball};
 
 #[derive(Component)]
 pub struct Paddle {

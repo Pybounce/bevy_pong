@@ -3,7 +3,7 @@ use bevy_rapier2d::prelude::*;
 use super::super::common::states::*;
 
 use super::paddles::*;
-use super::shared::ScoreTranslationLerpReset;
+use super::reset::ScoreTranslationLerpReset;
 
 const BALL_SPEED: f32 = 750.0;
 const BALL_SIZE: Vec2 = Vec2::new(20.0, 20.0);
