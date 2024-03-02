@@ -13,6 +13,7 @@ use bevy::{
     window::close_on_esc,
 };
 use common::states::StatesPlugin;
+use game::shared::ScoreTranslationLerpReset;
 use game::GamePlugin;
 use main_menu::MainMenuPlugin;
 
@@ -55,7 +56,9 @@ fn spawn_camera(mut commands: Commands) {
                 ..default()
             },
             ..default()
-        }).insert(BloomSettings::default());
+        })
+        .insert(BloomSettings::default())
+        .insert(ScoreTranslationLerpReset { reset_translation: Vec3::default() });
 }
 
 

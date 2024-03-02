@@ -3,6 +3,7 @@ use bevy_rapier2d::prelude::*;
 use super::super::common::states::*;
 
 use super::paddles::*;
+use super::shared::ScoreTranslationLerpReset;
 
 const BALL_SPEED: f32 = 750.0;
 const BALL_SIZE: Vec2 = Vec2::new(20.0, 20.0);
@@ -41,6 +42,7 @@ pub fn spawn_ball(mut commands: Commands) {
         .insert(LockedAxes::ROTATION_LOCKED)
         .insert(ActiveEvents::COLLISION_EVENTS)
         .insert(Ball { current_max_velocity: BALL_SPEED, base_velocity: BALL_SPEED })
+        .insert(ScoreTranslationLerpReset { reset_translation: Vec3::default() })
         .insert(DespawnOnStateExit::App(AppState::Game));
     }
 
@@ -74,8 +76,8 @@ pub fn check_paddle_collision(
         let paddle_transform = paddle_query.get(paddle_entity).unwrap();
         let (mut ball_velocity, ball_transform, mut ball) = ball_query.get_mut(ball_entity).unwrap();
         let y_diff = ball_transform.translation.y - paddle_transform.translation.y;
-        let y_diff_normalised = y_diff / paddle_transform.scale.y * 2.0;
-        let y = (y_diff_normalised * 0.5).min(0.5).max(-0.5);
+        let y_diff_normalised = ((y_diff / paddle_transform.scale.y) * 2.0).min(1.0).max(-1.0);
+        let y = y_diff_normalised * 0.5;
         let x = (1.0 - y.abs()) * ball_velocity.linvel.x.signum();
         ball.current_max_velocity += BALL_ACCELERATION;
         ball_velocity.linvel = (Vec2::new(x, y)) * ball.current_max_velocity;
