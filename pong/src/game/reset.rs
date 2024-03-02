@@ -4,6 +4,8 @@ use bevy_rapier2d::dynamics::RigidBody;
 use bevy_rapier2d::dynamics::RigidBodyDisabled;
 use bevy_rapier2d::dynamics::Velocity;
 
+use crate::common::tweening::PositionTween;
+
 use super::Ball;
 use super::GameResetData;
 use super::GameState;
@@ -26,15 +28,20 @@ pub fn check_reset_state_end(reset_data: Res<GameResetData>, time: Res<Time>, mu
 }
 
 ///so I can't name stuff well, fuck off
-pub fn disable_rigidbodies_on_reset_entities(
+pub fn start_resetting(
     mut commands: Commands,
-    mut query: Query<Entity, (With<ScoreTranslationLerpReset>, With<RigidBody>)>
+    mut query: Query<(Entity, &ScoreTranslationLerpReset, &Transform), With<RigidBody>>,
+    reset_data: Res<GameResetData>,
+    time: Res<Time> 
 ) {
-    for e in &mut query {
-        commands.entity(e).insert(RigidBodyDisabled);
+    for (e, lerp_reset_data, transform) in &mut query {
+        let reset_position_offset = lerp_reset_data.reset_translation - transform.translation;
+        commands.entity(e)
+        .insert(RigidBodyDisabled)
+        .insert(PositionTween::new(time.elapsed_seconds(), reset_data.end_time - time.elapsed_seconds(), reset_position_offset));
     }
 }
-pub fn enable_rigidbodies_on_reset_entities(
+pub fn finish_resetting(
     mut commands: Commands,
     mut query: Query<Entity, (With<ScoreTranslationLerpReset>, With<RigidBody>)>
 ) {

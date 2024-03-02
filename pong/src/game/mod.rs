@@ -44,11 +44,11 @@ impl Plugin for GamePlugin {
             move_paddles,
             update_camera_position
         ).run_if(in_state(GameState::Playing).and_then(in_state(AppState::Game))))
-        .add_systems(OnEnter(GameState::Resetting), (setup_game_reset_data, disable_rigidbodies_on_reset_entities))
-        .add_systems(OnExit(GameState::Resetting), (enable_rigidbodies_on_reset_entities, reset_ball_data))
+        .add_systems(OnEnter(GameState::Resetting), (setup_game_reset_data, start_resetting).chain())
+        .add_systems(OnExit(GameState::Resetting), (finish_resetting, reset_ball_data))
         .add_systems(Update, (
             check_reset_state_end,
-            translation_lerp_score_reset
+            //translation_lerp_score_reset
         ).run_if(in_state(GameState::Resetting).and_then(in_state(AppState::Game))));
     }
 }
