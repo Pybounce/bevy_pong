@@ -29,7 +29,7 @@ impl Plugin for GamePlugin {
         .add_event::<GameFinishEvent>()
         .add_systems(OnEnter(AppState::Game), (
             setup_level,
-            spawn_ball,
+            (spawn_ball, reset_ball_data).chain(),
             load_audio_handlers,
             setup_paddles,
             setup_scoreboard
