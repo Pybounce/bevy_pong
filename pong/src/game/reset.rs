@@ -4,6 +4,7 @@ use bevy_rapier2d::dynamics::RigidBody;
 use bevy_rapier2d::dynamics::RigidBodyDisabled;
 use bevy_rapier2d::dynamics::Velocity;
 
+use crate::common::tweening::ColorTween;
 use crate::common::tweening::PositionTween;
 
 use super::Ball;
@@ -30,12 +31,11 @@ pub fn check_reset_state_end(reset_data: Res<GameResetData>, time: Res<Time>, mu
 ///so I can't name stuff well, fuck off
 pub fn start_resetting(
     mut commands: Commands,
-    mut query: Query<(Entity, &ScoreTranslationLerpReset, &Transform)>,
+    mut query: Query<(Entity, &ScoreTranslationLerpReset, &Transform, Option<&Sprite>)>,
     reset_data: Res<GameResetData>,
     time: Res<Time> 
 ) {
-    for (e, lerp_reset_data, transform) in &mut query {
-            warn!("reset pos {}", lerp_reset_data.reset_translation);
+    for (e, lerp_reset_data, transform, opt_sprite) in &mut query {
         commands.entity(e)
         .insert(RigidBodyDisabled)
         .insert(PositionTween { 
@@ -44,11 +44,22 @@ pub fn start_resetting(
             start_pos: transform.translation, 
             target_pos: lerp_reset_data.reset_translation
          });
+
+         if let Some(sprite) = opt_sprite {
+            commands.entity(e).insert(ColorTween {
+                start_time: time.elapsed_seconds(),
+                duration: reset_data.end_time - time.elapsed_seconds(),
+                start_color: Color::rgb(sprite.color.r() / 4.0, sprite.color.g() / 4.0, sprite.color.b() / 4.0),
+                target_color: sprite.color,
+            });
+         }
+
+
     }
 }
 pub fn finish_resetting(
     mut commands: Commands,
-    mut query: Query<Entity, (With<ScoreTranslationLerpReset>, With<RigidBody>)>
+    mut query: Query<Entity, With<ScoreTranslationLerpReset>>
 ) {
     for e in &mut query {
         commands.entity(e).remove::<RigidBodyDisabled>();

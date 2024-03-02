@@ -36,3 +36,10 @@ ______________________Main Menu______________________
 ______________________Game Summary______________________
 
 - New AppState that shows the outcome of the game?
+
+
+
+______________________Tweening______________________
+
+- This entire tweening should work with multiple tweens of the same kind, for one entity - it currently doesn't.
+- Check if having Entity and commands ruins parallelism, if it does, move the removal of Tween Components into one system
