@@ -27,13 +27,16 @@ fn tween_positions(
     mut commands: Commands
 ) {
     for (mut transform, tween_data, e) in &mut query {
-        let lerp_t = (time.elapsed_seconds() - tween_data.start_time) / tween_data.duration;
+        let x = (time.elapsed_seconds() - tween_data.start_time) / tween_data.duration;
+        let mut lerp_t = x - 1.0;
+        lerp_t *= lerp_t;
+        lerp_t = 1.0 - lerp_t;
         if lerp_t <= 0.0 { continue; }    //start time not reached yet
 
         let offset = (tween_data.target_pos - tween_data.start_pos) * lerp_t;
         transform.translation = tween_data.start_pos + offset;
 
-        if lerp_t >= 1.0 { 
+        if x >= 1.0 { 
             transform.translation = tween_data.target_pos;   //this doesn't work with multiple!!!
             commands.entity(e).remove::<PositionTween>(); 
         }
