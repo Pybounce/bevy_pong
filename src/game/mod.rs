@@ -42,7 +42,8 @@ impl Plugin for GamePlugin {
             check_ball_collision,
             check_goal_collision,
             move_paddles,
-            update_camera_position
+            update_camera_position,
+            the_mayo_check
         ).run_if(in_state(GameState::Playing).and_then(in_state(AppState::Game))))
         .add_systems(OnEnter(GameState::Resetting), (setup_game_reset_data, start_resetting).chain())
         .add_systems(OnExit(GameState::Resetting), (finish_resetting, reset_ball_data))

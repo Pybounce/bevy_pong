@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use rand::*;
-use bevy_rapier2d::dynamics::RigidBody;
 use bevy_rapier2d::dynamics::RigidBodyDisabled;
 use bevy_rapier2d::dynamics::Velocity;
 

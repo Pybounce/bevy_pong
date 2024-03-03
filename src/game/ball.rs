@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use super::super::common::states::*;
 
-use super::paddles::*;
+use super::{paddles::*, LEVEL_AREA};
 use super::reset::ScoreTranslationLerpReset;
 
 const BALL_SPEED: f32 = 750.0;
@@ -34,6 +34,7 @@ pub fn spawn_ball(mut commands: Commands) {
             ..default()
         })
         .insert(RigidBody::Dynamic)
+        .insert(Ccd::enabled())
         .insert(Collider::cuboid(0.5, 0.5))
         .insert(Restitution::coefficient(1.0))
         .insert(Friction::coefficient(0.0))
@@ -85,3 +86,14 @@ pub fn check_paddle_collision(
     }
 }
 
+///Out of bounds check for ball
+pub fn the_mayo_check(
+    mut query: Query<&mut Transform, With<Ball>>,
+    mut game_state: ResMut<NextState<GameState>>
+) {
+    for tranform in &mut query {
+        if tranform.translation.length() > LEVEL_AREA.length() * 2.0 {
+            game_state.set(GameState::Resetting);
+        }
+    }
+}
