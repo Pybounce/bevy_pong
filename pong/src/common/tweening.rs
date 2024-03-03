@@ -28,9 +28,7 @@ fn tween_positions(
 ) {
     for (mut transform, tween_data, e) in &mut query {
         let x = (time.elapsed_seconds() - tween_data.start_time) / tween_data.duration;
-        let mut lerp_t = x - 1.0;
-        lerp_t *= lerp_t;
-        lerp_t = 1.0 - lerp_t;
+        let lerp_t = fuckin_inverse_quadratic_thingy(x);
         if lerp_t <= 0.0 { continue; }    //start time not reached yet
 
         let offset = (tween_data.target_pos - tween_data.start_pos) * lerp_t;
@@ -58,8 +56,8 @@ fn tween_colours(
     mut commands: Commands
 ) {
     for (mut sprite, tween_data, e) in &mut query {
-        let mut lerp_t = (time.elapsed_seconds() - tween_data.start_time) / tween_data.duration;
-        lerp_t *= lerp_t * lerp_t;
+        let x = (time.elapsed_seconds() - tween_data.start_time) / tween_data.duration;
+        let lerp_t = quadratic_lerp(x);
         if lerp_t <= 0.0 { continue; }    //start time not reached yet
 
         let color_rgba = ((tween_data.target_color.rgba_to_vec4() - tween_data.start_color.rgba_to_vec4()) * lerp_t) + tween_data.start_color.rgba_to_vec4();
@@ -73,3 +71,11 @@ fn tween_colours(
 }
 
 
+fn quadratic_lerp(t: f32) -> f32 {
+    t * t
+}
+fn fuckin_inverse_quadratic_thingy(t: f32) -> f32 {
+    let mut lerp_t = t - 1.0;
+    lerp_t *= lerp_t;
+    return 1.0 - lerp_t;
+}
