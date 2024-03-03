@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use super::{super::common::states::*, Ball};
+use super::{super::common::states::*, reset::ScoreTranslationLerpReset, Ball};
 
 #[derive(Component)]
 pub struct Paddle {
@@ -67,6 +67,7 @@ fn spawn_paddle(commands: &mut Commands, is_player_paddle: bool) {
     .insert(LockedAxes::ROTATION_LOCKED | LockedAxes::TRANSLATION_LOCKED_X)
     .insert(Velocity::default())
     .insert(Paddle::default())
+    .insert(ScoreTranslationLerpReset { reset_translation: pos })
     .insert(DespawnOnStateExit::App(AppState::Game));
     if is_player_paddle {
         paddle.insert(PlayerPaddle::default());

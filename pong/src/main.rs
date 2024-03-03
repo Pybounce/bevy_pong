@@ -13,6 +13,8 @@ use bevy::{
     window::close_on_esc,
 };
 use common::states::StatesPlugin;
+use common::tweening::TweenPlugin;
+use game::reset::ScoreTranslationLerpReset;
 use game::GamePlugin;
 use main_menu::MainMenuPlugin;
 
@@ -36,7 +38,7 @@ fn main() {
     .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
     .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
     //.add_plugins(RapierDebugRenderPlugin::default())
-    .add_plugins((DefaultPlugins.set(window_settings), KiraAudioPlugin, StatesPlugin, MainMenuPlugin, GamePlugin))
+    .add_plugins((DefaultPlugins.set(window_settings), KiraAudioPlugin, StatesPlugin, MainMenuPlugin, GamePlugin, TweenPlugin))
     .add_systems(Startup, spawn_camera)
     .add_systems(Update, close_on_esc)
     .run();
@@ -51,11 +53,13 @@ fn spawn_camera(mut commands: Commands) {
                 ..default()
             },
             transform: Transform {
-                translation: Vec3::new(100.0, 0.0, 0.0),
+                translation: Vec3::new(0.0, 0.0, 0.0),
                 ..default()
             },
             ..default()
-        }).insert(BloomSettings::default());
+        })
+        .insert(BloomSettings::default())
+        .insert(ScoreTranslationLerpReset { reset_translation: Vec3::default() });
 }
 
 

@@ -23,9 +23,14 @@ pub enum AppState {
 
 #[derive(States, Debug, Hash, Eq, PartialEq, Clone, Default)]
 pub enum GameState {
-    Paused,
+    Resetting,
     #[default]
-    UnPaused
+    Playing
+}
+
+#[derive(Resource, Default)]
+pub struct GameResetData {
+    pub end_time: f32
 }
 
 //entities with state lifetime x, will be removed when state x is exited
