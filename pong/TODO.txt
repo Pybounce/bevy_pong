@@ -1,0 +1,37 @@
+
+______________________Paddles______________________
+
+- Make the paddle_movement system nicer to read.
+
+-paddles.rs TODO: See about linking resources to state exits
+
+
+
+______________________Tests______________________
+
+- Have a test for state changes / setup+cleanup that checks entities/resources have been removed.
+
+
+
+______________________Main Menu______________________
+
+- Add nice main menu with click to start or something idk
+
+- Potentially look into making it actually look nice, text fading in and out etc, tweening in general
+
+
+
+______________________Game Summary______________________
+
+- New AppState that shows the outcome of the game?
+
+
+
+______________________Tweening______________________
+
+- I'm either going to make my own tweening or just use the fully functional library that already exists
+
+- This entire tweening should work with multiple tweens of the same kind, for one entity - it currently doesn't.
+- Check if having Entity and commands ruins parallelism, if it does, move the removal of Tween Components into one system
+
+
