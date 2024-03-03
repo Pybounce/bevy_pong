@@ -1,25 +1,10 @@
 
 ______________________Paddles______________________
 
-- Make a paddle config for initial paddle values used to create it (size/colour etc)
-- Move values that are used at runtime (speed) to some other config, perhaps even just initialise 
-with x velocity, and then sign flip the velocity.
-
 - Make the paddle_movement system nicer to read.
 
 -paddles.rs TODO: See about linking resources to state exits
 
-
-
-______________________Collision______________________
-
-- Collision with goals should reset the ball
-
-
-______________________EnemyAI______________________
-
-- Add in OPTIONAL AI for enemy, so probably config with bool stating if it's coop or AI
-- Then run that system only if that config resource is set, then you can switch between mid game too
 
 
 ______________________Tests______________________
@@ -27,11 +12,14 @@ ______________________Tests______________________
 - Have a test for state changes / setup+cleanup that checks entities/resources have been removed.
 
 
+
 ______________________Main Menu______________________
 
 - Add nice main menu with click to start or something idk
 
 - Potentially look into making it actually look nice, text fading in and out etc, tweening in general
+
+
 
 ______________________Game Summary______________________
 
@@ -41,5 +29,9 @@ ______________________Game Summary______________________
 
 ______________________Tweening______________________
 
+- I'm either going to make my own tweening or just use the fully functional library that already exists
+
 - This entire tweening should work with multiple tweens of the same kind, for one entity - it currently doesn't.
 - Check if having Entity and commands ruins parallelism, if it does, move the removal of Tween Components into one system
+
+

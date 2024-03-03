@@ -55,7 +55,8 @@ fn tween_colours(
     mut commands: Commands
 ) {
     for (mut sprite, tween_data, e) in &mut query {
-        let lerp_t = (time.elapsed_seconds() - tween_data.start_time) / tween_data.duration;
+        let mut lerp_t = (time.elapsed_seconds() - tween_data.start_time) / tween_data.duration;
+        lerp_t *= lerp_t * lerp_t;
         if lerp_t <= 0.0 { continue; }    //start time not reached yet
 
         let color_rgba = ((tween_data.target_color.rgba_to_vec4() - tween_data.start_color.rgba_to_vec4()) * lerp_t) + tween_data.start_color.rgba_to_vec4();
